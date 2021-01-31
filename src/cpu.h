@@ -33,7 +33,7 @@ class CPU{
         void execute_operation(Memory &mem, byte OpCode);
 
         void load_register(const Memory& mem, byte& CpuRegister);
-        void load_register_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset);
+        void load_register_from_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset);
 
         // Operation Codes
         static constexpr byte

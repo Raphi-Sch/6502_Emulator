@@ -10,7 +10,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         case INS_LDA_ZP:{
             byte addr = fetch_byte(mem);
-            load_register_zero_page(mem, Accumulator, addr, 0x00);
+            load_register_from_zero_page(mem, Accumulator, addr, 0x00);
         } break;
 
         case INS_LDA_ZPX:
@@ -61,7 +61,7 @@ void CPU::load_register(const Memory& mem, byte& CpuRegister){
     set_zero_and_negative_flag(CpuRegister);
 }
 
-void CPU::load_register_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset){
+void CPU::load_register_from_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset){
     byte calculated_addr = addr + offset;
     CpuRegister = mem.read(calculated_addr);
     set_zero_and_negative_flag(CpuRegister);
