@@ -7,7 +7,7 @@ typedef uint16_t word;
 
 class Memory{
     public:
-        byte read(word addr);
+        byte read(word addr) const;
         void write(word addr, byte value);
         void clear();
         void print(word start, word end);

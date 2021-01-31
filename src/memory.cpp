@@ -2,7 +2,7 @@
 
 using namespace std;
 
-byte Memory::read(word addr){
+byte Memory::read(word addr) const{
     return mem[addr];
 }
 
