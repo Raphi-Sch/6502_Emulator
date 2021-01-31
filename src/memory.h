@@ -1,6 +1,6 @@
 #include <cstdint>
 #include <iostream>
-#include  <iomanip>
+#include <iomanip>
 
 typedef uint8_t byte;
 typedef uint16_t word;
