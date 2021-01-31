@@ -5,12 +5,12 @@ typedef uint8_t byte;
 typedef uint16_t word;
 
 class CPU{
+    // Everything is public for testing purpose
     public:
         // Reset
         void reset(Memory& mem);
         void step_run(Memory& mem);       
 
-    private:
         // Processor Registers
         word ProgramCounter;
         byte StackPointer;
@@ -32,7 +32,6 @@ class CPU{
         void set_zero_and_negative_flag(byte value);
         void execute_operation(Memory &mem, byte OpCode);
 
-    public:
         // Operation Codes
         static constexpr byte
             INS_LDA_IM = 0xA9;
