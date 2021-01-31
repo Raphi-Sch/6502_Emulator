@@ -15,14 +15,6 @@ int main() {
 
     cpu.reset(mem);
 
-
-    // Test PRGM
-    cout << "Prgm Counter : 0x" << hex << setfill('0') << setw(4)<< cpu.get_program_counter() << endl;
-
-    cpu.increment_program_counter();
-
-    cout << "Prgm Counter : 0x" << hex << setfill('0') << setw(4)<< cpu.get_program_counter() << endl;
-
     
     return 0;
 }

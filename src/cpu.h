@@ -6,17 +6,9 @@ typedef uint16_t word;
 
 class CPU{
     public:
+        // Reset
         void reset(Memory &mem);
-
-        // Program Counter
-        word get_program_counter();
-        void set_program_counter(word addr);
-        void increment_program_counter();
-
-        // Stack Pointer
-        byte get_stack_pointer();
-        void increment_stack_pointer();
-        void decrement_stack_pointer();
+        void execute(Memory &mem, byte OpCode);
 
     private:
         // Processor Registers
@@ -25,7 +17,7 @@ class CPU{
         byte Accumulator;
         byte registerX;
         byte registerY;
-
+        
         // Processor Status
         bool CarryFlag;
         bool ZeroFlag;
@@ -34,5 +26,4 @@ class CPU{
         bool BreakCommand;
         bool OverflowFlag;
         bool NegativeFlag;
- 
 };
