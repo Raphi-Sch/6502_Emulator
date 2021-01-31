@@ -7,8 +7,8 @@ typedef uint16_t word;
 class CPU{
     public:
         // Reset
-        void reset(Memory &mem);
-        void execute(Memory &mem, byte OpCode);
+        void reset(Memory& mem);
+        void step_run(Memory& mem);       
 
     private:
         // Processor Registers
@@ -26,4 +26,14 @@ class CPU{
         bool BreakCommand;
         bool OverflowFlag;
         bool NegativeFlag;
+
+        // Functions
+        byte fetch_byte(const Memory& mem);
+        void set_zero_and_negative_flag(byte value);
+        void execute_operation(Memory &mem, byte OpCode);
+
+    public:
+        // Operation Codes
+        static constexpr byte
+            INS_LDA_IM = 0xA9;
 };
