@@ -4,10 +4,18 @@ using namespace std;
 
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
-        case INS_LDA_IM:{
-            Accumulator = fetch_byte(mem);
-            set_zero_and_negative_flag(Accumulator);
+        case INS_LDA_IM:
+            load_register(mem, Accumulator);
+            break;
+
+        case INS_LDA_ZP:{
+            byte addr = fetch_byte(mem);
+            load_register_zero_page(mem, Accumulator, addr, 0x00);
         } break;
+
+        case INS_LDA_ZPX:
+
+            break;
 
         default:
             cout << "Operation code not handle" << endl;
@@ -46,4 +54,15 @@ byte CPU::fetch_byte(const Memory& mem){
 void CPU::set_zero_and_negative_flag(byte value){
     ZeroFlag = !value;
     NegativeFlag = (value & (1 << 7));
+}
+
+void CPU::load_register(const Memory& mem, byte& CpuRegister){
+    CpuRegister = fetch_byte(mem);
+    set_zero_and_negative_flag(CpuRegister);
+}
+
+void CPU::load_register_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset){
+    byte calculated_addr = addr + offset;
+    CpuRegister = mem.read(calculated_addr);
+    set_zero_and_negative_flag(CpuRegister);
 }

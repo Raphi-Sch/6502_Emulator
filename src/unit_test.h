@@ -6,7 +6,8 @@ using namespace std;
 
 void run_all_test(CPU& cpu, Memory& mem);
 
-bool LDA_immediate(CPU& cpu, Memory& mem);
+bool LDA_IM(CPU& cpu, Memory& mem);
+bool LDA_ZP(CPU& cpu, Memory& mem);
 
 bool load_register_not_changing_unexpected_flags(CPU& cpu, CPU& copy, string instruction);
 

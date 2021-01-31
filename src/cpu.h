@@ -32,7 +32,12 @@ class CPU{
         void set_zero_and_negative_flag(byte value);
         void execute_operation(Memory &mem, byte OpCode);
 
+        void load_register(const Memory& mem, byte& CpuRegister);
+        void load_register_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset);
+
         // Operation Codes
         static constexpr byte
-            INS_LDA_IM = 0xA9;
+            INS_LDA_IM = 0xA9,
+            INS_LDA_ZP = 0xA5,
+            INS_LDA_ZPX = 0xB5;
 };

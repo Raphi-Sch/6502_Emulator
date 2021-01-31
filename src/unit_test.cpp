@@ -3,20 +3,27 @@
 using namespace std;
 
 void run_all_test(CPU& cpu, Memory& mem){
-    const int nb_test = 1;
+    const int nb_test = 2;
     int test_passed = 0;
+
+    // Setting reset vector
+    mem.write(0xfffc, 0x00);
+    mem.write(0xfffd, 0x02);
+
     cout << "There are " << nb_test << " to do." << endl;
 
-    if(LDA_immediate(cpu, mem)) test_passed++;
+    if(LDA_IM(cpu, mem)) test_passed++;
+    if(LDA_ZP(cpu, mem)) test_passed++;
     
     cout << test_passed << " of " << nb_test << " test passed successfully" << endl;
 }
 
-bool LDA_immediate(CPU& cpu, Memory& mem){
+bool LDA_IM(CPU& cpu, Memory& mem){
     bool valid = true;
-    
+
     // Reseting cpu
     cpu.reset(mem);
+    
     CPU CpuCopy = cpu;
 
     // ZeroFlag shoud be false, NegativeFlag shoud be true
@@ -47,6 +54,29 @@ bool LDA_immediate(CPU& cpu, Memory& mem){
 
     return valid;
 }
+
+bool LDA_ZP(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_ZP);
+    mem.write(0x0201, 0x01);
+    mem.write(0x0001, 0xFF);
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xFF, "INS_LDA_ZP", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_ZP", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_ZP", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_ZP")) valid = false;
+
+    return valid;
+}
+
 
 bool expected_eq(bool value, bool expected, string instruction, string thing){
     if(value != expected){
