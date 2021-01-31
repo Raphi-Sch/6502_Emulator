@@ -3,7 +3,7 @@
 using namespace std;
 
 void run_all_test(CPU& cpu, Memory& mem){
-    const int nb_test = 2;
+    const int nb_test = 7;
     int test_passed = 0;
 
     // Setting reset vector
@@ -14,6 +14,11 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     if(LDA_IM(cpu, mem)) test_passed++;
     if(LDA_ZP(cpu, mem)) test_passed++;
+    if(LDA_ZPX(cpu, mem)) test_passed++;
+    if(LDA_ABS(cpu, mem)) test_passed++;
+    if(LDA_ABSX(cpu, mem)) test_passed++;
+    if(LDA_ABSY(cpu, mem)) test_passed++;
+    if(LDA_INDX(cpu, mem)) test_passed++;
     
     cout << test_passed << " of " << nb_test << " test passed successfully" << endl;
 }
@@ -28,11 +33,11 @@ bool LDA_IM(CPU& cpu, Memory& mem){
 
     // ZeroFlag shoud be false, NegativeFlag shoud be true
     mem.write(0x0200, CPU::INS_LDA_IM);
-    mem.write(0x0201, 0xFF);
+    mem.write(0x0201, 0xF1);
 
     cpu.step_run(mem);
 
-    if(!expected_eq(cpu.Accumulator, 0xFF, "INS_LDA_IM", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.Accumulator, 0xF1, "INS_LDA_IM", "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_IM", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_IM", "NegativeFlag")) valid = false;
     if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_IM")) valid = false;
@@ -65,11 +70,11 @@ bool LDA_ZP(CPU& cpu, Memory& mem){
 
     mem.write(0x0200, CPU::INS_LDA_ZP);
     mem.write(0x0201, 0x01);
-    mem.write(0x0001, 0xFF);
+    mem.write(0x0001, 0xF2);
 
     cpu.step_run(mem);
 
-    if(!expected_eq(cpu.Accumulator, 0xFF, "INS_LDA_ZP", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.Accumulator, 0xF2, "INS_LDA_ZP", "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_ZP", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_ZP", "NegativeFlag")) valid = false;
     if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_ZP")) valid = false;
@@ -77,10 +82,132 @@ bool LDA_ZP(CPU& cpu, Memory& mem){
     return valid;
 }
 
+bool LDA_ZPX(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_ZPX);
+    mem.write(0x0201, 0x01);
+    mem.write(0x000A, 0xF3);
+    cpu.registerX = 0x09;
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xF3, "INS_LDA_ZPX", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_ZPX", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_ZPX", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_ZPX")) valid = false;
+
+    return valid;
+}
+
+bool LDA_ABS(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_ABS);
+    mem.write(0x0201, 0x10);
+    mem.write(0x0202, 0x10);
+    mem.write(0x1010, 0xF4);
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xF4, "INS_LDA_ABS", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_ABS", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_ABS", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_ABS")) valid = false;
+
+    return valid;
+}
+
+bool LDA_ABSX(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_ABSX);
+    mem.write(0x0201, 0x10);
+    mem.write(0x0202, 0x10);
+    mem.write(0x101A, 0xF5);
+    cpu.registerX = 0x0A;
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xF5, "INS_LDA_ABSX", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_ABSX", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_ABSX", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_ABSX")) valid = false;
+
+    return valid;
+}
+
+bool LDA_ABSY(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_ABSY);
+    mem.write(0x0201, 0x10);
+    mem.write(0x0202, 0x10);
+    mem.write(0x101A, 0xF6);
+    cpu.registerY = 0x0A;
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xF6, "INS_LDA_ABSY", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_ABSY", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_ABSY", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_ABSY")) valid = false;
+
+    return valid;
+}
+
+bool LDA_INDX(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_INDX);
+    mem.write(0x0201, 0x20);
+    cpu.registerX = 0x04;
+    mem.write(0x0024, 0x74);
+    mem.write(0x0025, 0x20);
+    mem.write(0x2074, 0xF7);
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xF7, "INS_LDA_INDX", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDX", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDX", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDX")) valid = false;
+}
+
+bool LDA_INDY(CPU& cpu, Memory& mem){
+    
+
+    
+}
 
 bool expected_eq(bool value, bool expected, string instruction, string thing){
     if(value != expected){
-        cout << instruction << " : " << thing << " not set properly ( expected : '" << expected << "' - got : '" << value << "')" << endl;
+        cout << instruction << " : " << thing << " not set properly (expected : '" << hex << (int)expected << "' - got : '" << hex << (int)value << "')" << endl;
         return false;
     }
     return true;
@@ -88,7 +215,7 @@ bool expected_eq(bool value, bool expected, string instruction, string thing){
 
 bool expected_eq(byte value, byte expected, string instruction, string thing){
     if(value != expected){
-        cout << instruction << " : " << thing << " not set properly ( expected : '" << hex << expected << "' - got : '" << value << "')" << endl;
+        cout << instruction << " : " << thing << " not set properly (expected : '" << hex << (int)expected << "' - got : '" << hex << (int)value << "')" << endl;
         return false;
     }
 

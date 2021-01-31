@@ -29,15 +29,22 @@ class CPU{
 
         // Functions
         byte fetch_byte(const Memory& mem);
+        word fetch_word(const Memory& mem);
         void set_zero_and_negative_flag(byte value);
         void execute_operation(Memory &mem, byte OpCode);
 
-        void load_register(const Memory& mem, byte& CpuRegister);
+        void load_register_with_next_byte(const Memory& mem, byte& CpuRegister);
         void load_register_from_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset);
+        void load_register_from_absolute_addr(const Memory& mem, byte& cpuRegister, word addr, byte offset);
 
         // Operation Codes
         static constexpr byte
             INS_LDA_IM = 0xA9,
             INS_LDA_ZP = 0xA5,
-            INS_LDA_ZPX = 0xB5;
+            INS_LDA_ZPX = 0xB5,
+            INS_LDA_ABS = 0xAD,
+            INS_LDA_ABSX = 0xBD,
+            INS_LDA_ABSY = 0xB9,
+            INS_LDA_INDX = 0xA1,
+            INS_LDA_INDY = 0xB1;
 };

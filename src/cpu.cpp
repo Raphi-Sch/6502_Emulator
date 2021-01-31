@@ -5,7 +5,7 @@ using namespace std;
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
         case INS_LDA_IM:
-            load_register(mem, Accumulator);
+            load_register_with_next_byte(mem, Accumulator);
             break;
 
         case INS_LDA_ZP:{
@@ -13,9 +13,39 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             load_register_from_zero_page(mem, Accumulator, addr, 0x00);
         } break;
 
-        case INS_LDA_ZPX:
+        case INS_LDA_ZPX:{
+            byte addr = fetch_byte(mem);
+            load_register_from_zero_page(mem, Accumulator, addr, registerX);
+        } break;
 
-            break;
+        case INS_LDA_ABS:{
+            word addr = fetch_word(mem);
+            load_register_from_absolute_addr(mem, Accumulator, addr, 0x00);
+        } break;
+
+        case INS_LDA_ABSX:{
+            word addr = fetch_word(mem);
+            load_register_from_absolute_addr(mem, Accumulator, addr, registerX);
+        } break;
+
+        case INS_LDA_ABSY:{
+            word addr = fetch_word(mem);
+            load_register_from_absolute_addr(mem, Accumulator, addr, registerY);
+        } break;
+
+        case INS_LDA_INDX:{
+            byte addrFromIns = fetch_byte(mem);
+            byte addrFromMemLeast = mem.read((registerX + addrFromIns) & 0xFF);
+            byte addrFromMemMost = mem.read((registerX + addrFromIns + 0x01) & 0xFF);
+            word addr = addrFromMemLeast | (addrFromMemMost << 8);
+            load_register_from_absolute_addr(mem, Accumulator, addr, 0x00);
+        } break;
+
+        case INS_LDA_INDY:{
+            byte addrFromIns = fetch_byte(mem);
+            
+            
+        } break;
 
         default:
             cout << "Operation code not handle" << endl;
@@ -29,6 +59,7 @@ void CPU::step_run(Memory& mem){
 
 void CPU::reset(Memory& mem){
     // Register
+    // 6502 is little endian
     ProgramCounter = mem.read(0xfffc) | (mem.read(0xfffd) << 8);
     StackPointer = 0xff;
     Accumulator = 0;
@@ -51,18 +82,31 @@ byte CPU::fetch_byte(const Memory& mem){
     return Data;
 }
 
+word CPU::fetch_word(const Memory& mem){
+    // 6502 is little endian
+    word data = mem.read(ProgramCounter) | (mem.read(ProgramCounter + 1) << 8);
+    ProgramCounter += 2;
+    return data;
+}
+
 void CPU::set_zero_and_negative_flag(byte value){
     ZeroFlag = !value;
     NegativeFlag = (value & (1 << 7));
 }
 
-void CPU::load_register(const Memory& mem, byte& CpuRegister){
-    CpuRegister = fetch_byte(mem);
-    set_zero_and_negative_flag(CpuRegister);
+void CPU::load_register_with_next_byte(const Memory& mem, byte& cpuRegister){
+    cpuRegister = fetch_byte(mem);
+    set_zero_and_negative_flag(cpuRegister);
 }
 
-void CPU::load_register_from_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset){
+void CPU::load_register_from_zero_page(const Memory& mem, byte& cpuRegister, byte addr, byte offset){
     byte calculated_addr = addr + offset;
-    CpuRegister = mem.read(calculated_addr);
-    set_zero_and_negative_flag(CpuRegister);
+    cpuRegister = mem.read(calculated_addr);
+    set_zero_and_negative_flag(cpuRegister);
+}
+
+void CPU::load_register_from_absolute_addr(const Memory& mem, byte& cpuRegister, word addr, byte offset){
+    word calculated_addr = addr + offset;
+    cpuRegister = mem.read(calculated_addr);
+    set_zero_and_negative_flag(cpuRegister);
 }
