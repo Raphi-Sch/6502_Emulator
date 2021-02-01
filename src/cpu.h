@@ -41,6 +41,7 @@ class CPU{
 
         // Operation Codes
         static constexpr byte
+            // LDA
             INS_LDA_IM = 0xA9,
             INS_LDA_ZP = 0xA5,
             INS_LDA_ZPX = 0xB5,
@@ -48,5 +49,20 @@ class CPU{
             INS_LDA_ABSX = 0xBD,
             INS_LDA_ABSY = 0xB9,
             INS_LDA_INDX = 0xA1,
-            INS_LDA_INDY = 0xB1;
+            INS_LDA_INDY = 0xB1,
+
+            // LDX
+            INS_LDX_IM = 0xA2,
+            INS_LDX_ZP = 0xA6,
+            INS_LDX_ZPY = 0xB6,
+            INS_LDX_ABS = 0xAE,
+            INS_LDX_ABSY = 0xBE,
+
+            // LDY
+            INS_LDY_IM = 0xA0,
+            INS_LDY_ZP = 0xA4,
+            INS_LDY_ZPX = 0xB4,
+            INS_LDY_ABS = 0xAC,
+            INS_LDY_ABSX = 0xBC;
+
 };

@@ -4,10 +4,12 @@ using namespace std;
 
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
-        case INS_LDA_IM:
+        // LDA
+        case INS_LDA_IM:{
             // Load the next byte directly into the Accummulator
             load_register_with_next_byte(mem, Accumulator);
             break;
+        }
 
         case INS_LDA_ZP:{
             // Load data from Addr in ZeroPage <=> top 8 bits of the addr is always 0x00
@@ -50,6 +52,59 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
+
+        // LDX
+        case INS_LDX_IM:{
+            load_register_with_next_byte(mem, registerX);
+            break;
+        }
+
+        case INS_LDX_ZP:{
+            word addr = fetch_byte(mem) & 0x00FF; 
+            load_register_with_byte_from_addr(mem, registerX, addr);;
+        } break;
+
+        case INS_LDX_ZPY:{
+            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
+            load_register_with_byte_from_addr(mem, registerX, addr);
+        } break;
+
+        case INS_LDX_ABS:{
+            word addr = fetch_word(mem);
+            load_register_with_byte_from_addr(mem, registerX, addr);
+        } break;
+
+        case INS_LDX_ABSY:{
+            word addr = fetch_word(mem) + registerY;
+            load_register_with_byte_from_addr(mem, registerX, addr);
+        } break;
+
+        // LDY
+        case INS_LDY_IM:{
+            load_register_with_next_byte(mem, registerY);
+            break;
+        }
+
+        case INS_LDY_ZP:{
+            word addr = fetch_byte(mem) & 0x00FF; 
+            load_register_with_byte_from_addr(mem, registerY, addr);;
+        } break;
+
+        case INS_LDY_ZPX:{
+            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
+            load_register_with_byte_from_addr(mem, registerY, addr);
+        } break;
+
+        case INS_LDY_ABS:{
+            word addr = fetch_word(mem);
+            load_register_with_byte_from_addr(mem, registerY, addr);
+        } break;
+
+        case INS_LDY_ABSX:{
+            word addr = fetch_word(mem) + registerX;
+            load_register_with_byte_from_addr(mem, registerY, addr);
+        } break;
+        
 
         default:
             cout << "Operation code not handle" << endl;
