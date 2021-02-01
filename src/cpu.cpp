@@ -116,6 +116,7 @@ word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){
 }
 
 word CPU::addressing_mode_indirect_indexed(const Memory& mem, byte addr){
-    // 6502 is little endian
-    return 0x0000;
+    byte addrFromMemLeast = mem.read(addr);
+    byte addrFromMemMost  = mem.read((addr + 0x01) & 0xFF);
+    return (addrFromMemLeast | (addrFromMemMost << 8)) + registerY;
 }

@@ -17,6 +17,7 @@ void run_all_test(CPU& cpu, Memory& mem){
     nb_test++; if(LDA_ABSX(cpu, mem)) test_passed++;
     nb_test++; if(LDA_ABSY(cpu, mem)) test_passed++;
     nb_test++; if(LDA_INDX(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_INDY(cpu, mem)) test_passed++;
     
     cout << test_passed << " of " << nb_test << " test passed successfully" << endl;
 }
@@ -200,9 +201,28 @@ bool LDA_INDX(CPU& cpu, Memory& mem){
 }
 
 bool LDA_INDY(CPU& cpu, Memory& mem){
-    
+    bool valid = true;
 
-    return true;
+    // Reseting cpu
+    cpu.reset(mem);
+    
+    CPU CpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_LDA_INDY);
+    mem.write(0x0201, 0x86);
+    cpu.registerY = 0x10;
+    mem.write(0x0086, 0x28);
+    mem.write(0x0087, 0x40);
+    mem.write(0x4038, 0xF8);
+
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, 0xF8, "INS_LDA_INDX", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDX", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDX", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDX")) valid = false;
+
+    return valid;
 }
 
 bool expected_eq(bool value, bool expected, string instruction, string thing){
