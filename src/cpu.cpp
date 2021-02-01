@@ -5,17 +5,18 @@ using namespace std;
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
         case INS_LDA_IM:
+            // Load the next byte directly into the Accummulator
             load_register_with_next_byte(mem, Accumulator);
             break;
 
         case INS_LDA_ZP:{
-            // Addr is in ZeroPage aka top byte of the addr is always 0x00
+            // Addr is in ZeroPage <=> top 8 bits of the addr is always 0x00
             word addr = fetch_byte(mem) & 0x00FF; 
             load_register_with_byte_from_addr(mem, Accumulator, addr);;
         } break;
 
         case INS_LDA_ZPX:{
-            // Addr is in ZeroPage aka top byte of the addr is always 0x00
+            // Addr is in ZeroPage <=> top 8 bits of the addr is always 0x00
             word addr = (fetch_byte(mem) + registerX) & 0x00FF; 
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
