@@ -3,22 +3,20 @@
 using namespace std;
 
 void run_all_test(CPU& cpu, Memory& mem){
-    const int nb_test = 7;
+    int nb_test = 0;
     int test_passed = 0;
 
     // Setting reset vector
     mem.write(0xfffc, 0x00);
     mem.write(0xfffd, 0x02);
 
-    cout << "There are " << nb_test << " to do." << endl;
-
-    if(LDA_IM(cpu, mem)) test_passed++;
-    if(LDA_ZP(cpu, mem)) test_passed++;
-    if(LDA_ZPX(cpu, mem)) test_passed++;
-    if(LDA_ABS(cpu, mem)) test_passed++;
-    if(LDA_ABSX(cpu, mem)) test_passed++;
-    if(LDA_ABSY(cpu, mem)) test_passed++;
-    if(LDA_INDX(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_IM(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_ZP(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_ZPX(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_ABS(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_ABSX(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_ABSY(cpu, mem)) test_passed++;
+    nb_test++; if(LDA_INDX(cpu, mem)) test_passed++;
     
     cout << test_passed << " of " << nb_test << " test passed successfully" << endl;
 }
@@ -197,12 +195,14 @@ bool LDA_INDX(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDX", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDX", "NegativeFlag")) valid = false;
     if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDX")) valid = false;
+
+    return valid;
 }
 
 bool LDA_INDY(CPU& cpu, Memory& mem){
     
 
-    
+    return true;
 }
 
 bool expected_eq(bool value, bool expected, string instruction, string thing){
