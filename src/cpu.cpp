@@ -9,28 +9,30 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             break;
 
         case INS_LDA_ZP:{
-            byte addr = fetch_byte(mem);
-            load_register_from_zero_page(mem, Accumulator, addr, 0x00);
+            // Addr is in ZeroPage aka top byte of the addr is always 0x00
+            word addr = fetch_byte(mem) & 0x00FF; 
+            load_register_with_byte_from_addr(mem, Accumulator, addr);;
         } break;
 
         case INS_LDA_ZPX:{
-            byte addr = fetch_byte(mem);
-            load_register_from_zero_page(mem, Accumulator, addr, registerX);
+            // Addr is in ZeroPage aka top byte of the addr is always 0x00
+            word addr = (fetch_byte(mem) + registerX) & 0x00FF; 
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ABS:{
             word addr = fetch_word(mem);
-            load_register_from_absolute_addr(mem, Accumulator, addr, 0x00);
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ABSX:{
-            word addr = fetch_word(mem);
-            load_register_from_absolute_addr(mem, Accumulator, addr, registerX);
+            word addr = fetch_word(mem) + registerX;
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ABSY:{
-            word addr = fetch_word(mem);
-            load_register_from_absolute_addr(mem, Accumulator, addr, registerY);
+            word addr = fetch_word(mem) + registerY;
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_INDX:{
@@ -38,7 +40,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             byte addrFromMemLeast = mem.read((registerX + addrFromIns) & 0xFF);
             byte addrFromMemMost = mem.read((registerX + addrFromIns + 0x01) & 0xFF);
             word addr = addrFromMemLeast | (addrFromMemMost << 8);
-            load_register_from_absolute_addr(mem, Accumulator, addr, 0x00);
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_INDY:{
@@ -99,14 +101,7 @@ void CPU::load_register_with_next_byte(const Memory& mem, byte& cpuRegister){
     set_zero_and_negative_flag(cpuRegister);
 }
 
-void CPU::load_register_from_zero_page(const Memory& mem, byte& cpuRegister, byte addr, byte offset){
-    byte calculated_addr = addr + offset;
-    cpuRegister = mem.read(calculated_addr);
-    set_zero_and_negative_flag(cpuRegister);
-}
-
-void CPU::load_register_from_absolute_addr(const Memory& mem, byte& cpuRegister, word addr, byte offset){
-    word calculated_addr = addr + offset;
-    cpuRegister = mem.read(calculated_addr);
+void CPU::load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr){
+    cpuRegister = mem.read(addr);
     set_zero_and_negative_flag(cpuRegister);
 }

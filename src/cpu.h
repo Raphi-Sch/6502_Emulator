@@ -33,9 +33,8 @@ class CPU{
         void set_zero_and_negative_flag(byte value);
         void execute_operation(Memory &mem, byte OpCode);
 
-        void load_register_with_next_byte(const Memory& mem, byte& CpuRegister);
-        void load_register_from_zero_page(const Memory& mem, byte& CpuRegister, byte addr, byte offset);
-        void load_register_from_absolute_addr(const Memory& mem, byte& cpuRegister, word addr, byte offset);
+        void load_register_with_next_byte(const Memory& mem, byte& cpuRegister);
+        void load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr);
 
         // Operation Codes
         static constexpr byte
