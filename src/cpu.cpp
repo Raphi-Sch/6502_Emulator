@@ -10,28 +10,31 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             break;
 
         case INS_LDA_ZP:{
-            // Addr is in ZeroPage <=> top 8 bits of the addr is always 0x00
+            // Load data from Addr in ZeroPage <=> top 8 bits of the addr is always 0x00
             word addr = fetch_byte(mem) & 0x00FF; 
             load_register_with_byte_from_addr(mem, Accumulator, addr);;
         } break;
 
         case INS_LDA_ZPX:{
-            // Addr is in ZeroPage <=> top 8 bits of the addr is always 0x00
+            // Load data from Addr in ZeroPage offset by registerX
             word addr = (fetch_byte(mem) + registerX) & 0x00FF; 
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ABS:{
+            // Load data from anywhere in memory, absolute addressing
             word addr = fetch_word(mem);
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ABSX:{
+            // Load data from anywhere in memory, absolute addressing offset by registerX
             word addr = fetch_word(mem) + registerX;
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ABSY:{
+            // Load data from anywhere in memory, absolute addressing offset by registerY
             word addr = fetch_word(mem) + registerY;
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
@@ -44,8 +47,8 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         case INS_LDA_INDY:{
             byte addrFromIns = fetch_byte(mem);
-            
-            
+            word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         default:
@@ -110,4 +113,9 @@ word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){
     byte addrFromMemLeast = mem.read((registerX + addr) & 0xFF);
     byte addrFromMemMost  = mem.read((registerX + addr + 0x01) & 0xFF);
     return (addrFromMemLeast | (addrFromMemMost << 8));
+}
+
+word CPU::addressing_mode_indirect_indexed(const Memory& mem, byte addr){
+    // 6502 is little endian
+    return 0x0000;
 }

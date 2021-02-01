@@ -37,6 +37,7 @@ class CPU{
         void load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr);
 
         word addressing_mode_indexed_indirect(const Memory& mem, byte addr);
+        word addressing_mode_indirect_indexed(const Memory& mem, byte addr);
 
         // Operation Codes
         static constexpr byte
