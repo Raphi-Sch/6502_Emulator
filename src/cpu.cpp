@@ -108,7 +108,34 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // NOP
         case INS_NOP:
             break;
+
+        // PUSH-PULL
+        case INS_PHA:
+            mem.write(StackPointer, Accumulator);
+            StackPointer--;
+            break;
+
+        case INS_PLA:
+            Accumulator = mem.read(StackPointer);
+            StackPointer++;
+            break;     
+
+        case INS_PHP:
+            mem.write(StackPointer, CarryFlag & (ZeroFlag << 1) & (InterruptDisable << 2) & (DecimalMode << 3) & (BreakCommand << 4) & (OverflowFlag << 6) & (NegativeFlag << 7));
+            StackPointer--;
+            break;
         
+        case INS_PLP:
+            byte flags = mem.read(StackPointer);
+            CarryFlag = flags & 0x1;
+            ZeroFlag = (flags >> 1) & 0x1;
+            InterruptDisable = (flags >> 2) & 0x1;
+            DecimalMode = (flags >> 3) & 0x1;
+            BreakCommand = (flags >> 4) & 0x1;
+            OverflowFlag = (flags >> 6) & 0x1;
+            NegativeFlag = (flags >> 7) & 0x1;
+            StackPointer++;
+            break;
 
         default:
             cout << "CPU : Operation code not handle" << endl;

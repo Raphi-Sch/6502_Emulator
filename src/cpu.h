@@ -66,6 +66,14 @@ class CPU{
             INS_LDY_ABSX = 0xBC,
 
             // NOP
-            INS_NOP = 0xEA;
+            INS_NOP = 0xEA,
+
+            // PUSH
+            INS_PHA = 0x48,
+            INS_PHP = 0x08,
+
+            // PULL
+            INS_PLA = 0x68,
+            INS_PLP = 0x28;
 
 };
