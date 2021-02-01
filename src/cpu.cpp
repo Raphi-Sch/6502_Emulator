@@ -37,9 +37,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         case INS_LDA_INDX:{
             byte addrFromIns = fetch_byte(mem);
-            byte addrFromMemLeast = mem.read((registerX + addrFromIns) & 0xFF);
-            byte addrFromMemMost = mem.read((registerX + addrFromIns + 0x01) & 0xFF);
-            word addr = addrFromMemLeast | (addrFromMemMost << 8);
+            word addr = addressing_mode_indexed_indirect(mem, addrFromIns);
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
@@ -104,4 +102,11 @@ void CPU::load_register_with_next_byte(const Memory& mem, byte& cpuRegister){
 void CPU::load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr){
     cpuRegister = mem.read(addr);
     set_zero_and_negative_flag(cpuRegister);
+}
+
+word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){
+    // 6502 is little endian
+    byte addrFromMemLeast = mem.read((registerX + addr) & 0xFF);
+    byte addrFromMemMost  = mem.read((registerX + addr + 0x01) & 0xFF);
+    return (addrFromMemLeast | (addrFromMemMost << 8));
 }
