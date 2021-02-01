@@ -63,6 +63,9 @@ class CPU{
             INS_LDY_ZP = 0xA4,
             INS_LDY_ZPX = 0xB4,
             INS_LDY_ABS = 0xAC,
-            INS_LDY_ABSX = 0xBC;
+            INS_LDY_ABSX = 0xBC,
+
+            // NOP
+            INS_NOP = 0xEA;
 
 };

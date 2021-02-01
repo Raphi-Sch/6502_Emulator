@@ -104,10 +104,14 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             word addr = fetch_word(mem) + registerX;
             load_register_with_byte_from_addr(mem, registerY, addr);
         } break;
+
+        // NOP
+        case INS_NOP:
+            break;
         
 
         default:
-            cout << "Operation code not handle" << endl;
+            cout << "CPU : Operation code not handle" << endl;
             break;
     }
 }
