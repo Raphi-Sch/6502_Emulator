@@ -179,19 +179,19 @@ word CPU::fetch_word(const Memory& mem){
     return data;
 }
 
-void CPU::set_zero_and_negative_flag(byte value){
+void CPU::load_register_set_zero_and_negative_flag(byte value){
     ZeroFlag = !value;
     NegativeFlag = (value & (1 << 7));
 }
 
 void CPU::load_register_with_next_byte(const Memory& mem, byte& cpuRegister){
     cpuRegister = fetch_byte(mem);
-    set_zero_and_negative_flag(cpuRegister);
+    load_register_set_zero_and_negative_flag(cpuRegister);
 }
 
 void CPU::load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr){
     cpuRegister = mem.read(addr);
-    set_zero_and_negative_flag(cpuRegister);
+    load_register_set_zero_and_negative_flag(cpuRegister);
 }
 
 word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){

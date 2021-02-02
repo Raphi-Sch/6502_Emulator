@@ -82,7 +82,7 @@ class CPU{
         // Load register
         void load_register_with_next_byte(const Memory& mem, byte& cpuRegister);
         void load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr);
-        void set_zero_and_negative_flag(byte value);
+        void load_register_set_zero_and_negative_flag(byte value);
 
         // Addressing modes
         word addressing_mode_indexed_indirect(const Memory& mem, byte addr);
