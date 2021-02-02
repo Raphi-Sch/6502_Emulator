@@ -70,31 +70,31 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             // Store content of the Accumulator into memory (Absolute addressing)
             word addr = fetch_word(mem);
             mem.write(addr, Accumulator);
-        }
+        } break;
 
         case INS_STA_ABSX:{
             // Store content of the Accumulator into memory (Absolute addressing offset by registerX)
             word addr = fetch_word(mem) + registerX;
             mem.write(addr, Accumulator);
-        }
+        } break;
 
         case INS_STA_ABSY:{
             // Store content of the Accumulator into memory (Absolute addressing offset by registerY)
             word addr = fetch_word(mem) + registerY;
             mem.write(addr, Accumulator);
-        }
+        } break;
 
         case INS_STA_INDX:{
             byte addrFromIns = fetch_byte(mem);
             word addr = addressing_mode_indexed_indirect(mem, addrFromIns);
             mem.write(addr, Accumulator);
-        }
+        } break;
 
         case INS_STA_INDY:{
             byte addrFromIns = fetch_byte(mem);
             word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
             mem.write(addr, Accumulator);
-        }
+        } break;
 
         // LDX
         case INS_LDX_IM:{
@@ -122,6 +122,23 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             load_register_with_byte_from_addr(mem, registerX, addr);
         } break;
 
+        // STX
+        case INS_STX_ZP:{
+            // Store content of the Accumulator into memory (ZP addr)
+            word addr = fetch_byte(mem) & 0x00FF;
+            mem.write(addr, registerX);
+        } break;
+
+        case INS_STX_ZPY:{
+            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
+            mem.write(addr, registerX);
+        } break;
+
+        case INS_STX_ABS:{
+            word addr = fetch_word(mem);
+            mem.write(addr, registerX);
+        } break;
+
         // LDY
         case INS_LDY_IM:{
             load_register_with_next_byte(mem, registerY);
@@ -146,6 +163,23 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_LDY_ABSX:{
             word addr = fetch_word(mem) + registerX;
             load_register_with_byte_from_addr(mem, registerY, addr);
+        } break;
+
+        // STY
+        case INS_STY_ZP:{
+            // Store content of the Accumulator into memory (ZP addr)
+            word addr = fetch_byte(mem) & 0x00FF;
+            mem.write(addr, registerY);
+        } break;
+
+        case INS_STY_ZPX:{
+            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
+            mem.write(addr, registerY);
+        } break;
+
+        case INS_STY_ABS:{
+            word addr = fetch_word(mem);
+            mem.write(addr, registerY);
         } break;
 
         // NOP
@@ -181,7 +215,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         }break;
 
         default:{
-            cout << "CPU : Operation code not handle" << endl;
+            cout << "CPU : Operation code " << hex << int(OpCode) << " not handle" << endl;
         }break;
     }
 }
