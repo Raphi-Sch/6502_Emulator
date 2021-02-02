@@ -5,11 +5,12 @@ typedef uint8_t byte;
 typedef uint16_t word;
 
 class CPU{
-    // Everything is public for testing purpose
+    // Register are public for testing purpose
     public:
-        // Reset
+        // CPU Functions
         void reset(Memory& mem);
-        void step_run(Memory& mem);       
+        void step_run(Memory& mem);
+        void execute_operation(Memory &mem, byte OpCode);     
 
         // Processor Registers
         word ProgramCounter;
@@ -27,18 +28,6 @@ class CPU{
         bool OverflowFlag;
         bool NegativeFlag;
 
-        // Functions
-        byte fetch_byte(const Memory& mem);
-        word fetch_word(const Memory& mem);
-        void set_zero_and_negative_flag(byte value);
-        void execute_operation(Memory &mem, byte OpCode);
-
-        void load_register_with_next_byte(const Memory& mem, byte& cpuRegister);
-        void load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr);
-
-        word addressing_mode_indexed_indirect(const Memory& mem, byte addr);
-        word addressing_mode_indirect_indexed(const Memory& mem, byte addr);
-
         // Operation Codes
         static constexpr byte
             // LDA
@@ -50,6 +39,15 @@ class CPU{
             INS_LDA_ABSY = 0xB9,
             INS_LDA_INDX = 0xA1,
             INS_LDA_INDY = 0xB1,
+
+            // STA
+            INS_STA_ZP = 0x85,
+            INS_STA_ZPX = 0x95,
+            INS_STA_ABS = 0x8D,
+            INS_STA_ABSX = 0x9D,
+            INS_STA_ABSY = 0x99,
+            INS_STA_INDX = 0x81,
+            INS_STA_INDY = 0x91,
 
             // LDX
             INS_LDX_IM = 0xA2,
@@ -75,5 +73,19 @@ class CPU{
             // PULL
             INS_PLA = 0x68,
             INS_PLP = 0x28;
+
+    private:
+        // Fetch byte/word from memory space
+        byte fetch_byte(const Memory& mem);
+        word fetch_word(const Memory& mem);
+
+        // Load register
+        void load_register_with_next_byte(const Memory& mem, byte& cpuRegister);
+        void load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr);
+        void set_zero_and_negative_flag(byte value);
+
+        // Addressing modes
+        word addressing_mode_indexed_indirect(const Memory& mem, byte addr);
+        word addressing_mode_indirect_indexed(const Memory& mem, byte addr);
 
 };

@@ -110,22 +110,22 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             break;
 
         // PUSH-PULL
-        case INS_PHA:
+        case INS_PHA:{
             mem.write(StackPointer, Accumulator);
             StackPointer--;
-            break;
+        } break;
 
-        case INS_PLA:
+        case INS_PLA:{
             Accumulator = mem.read(StackPointer);
             StackPointer++;
-            break;     
+        } break;     
 
-        case INS_PHP:
+        case INS_PHP:{
             mem.write(StackPointer, CarryFlag & (ZeroFlag << 1) & (InterruptDisable << 2) & (DecimalMode << 3) & (BreakCommand << 4) & (OverflowFlag << 6) & (NegativeFlag << 7));
             StackPointer--;
-            break;
+        }break;
         
-        case INS_PLP:
+        case INS_PLP:{
             byte flags = mem.read(StackPointer);
             CarryFlag = flags & 0x1;
             ZeroFlag = (flags >> 1) & 0x1;
@@ -135,11 +135,11 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             OverflowFlag = (flags >> 6) & 0x1;
             NegativeFlag = (flags >> 7) & 0x1;
             StackPointer++;
-            break;
+        }break;
 
-        default:
+        default:{
             cout << "CPU : Operation code not handle" << endl;
-            break;
+        }break;
     }
 }
 
