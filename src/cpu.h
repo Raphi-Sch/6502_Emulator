@@ -56,12 +56,22 @@ class CPU{
             INS_LDX_ABS = 0xAE,
             INS_LDX_ABSY = 0xBE,
 
+            // STX
+            INS_STX_ZP = 0x86,
+            INS_STX_ZPY = 0x96,
+            INS_STX_ABS = 0x8E,
+
             // LDY
             INS_LDY_IM = 0xA0,
             INS_LDY_ZP = 0xA4,
             INS_LDY_ZPX = 0xB4,
             INS_LDY_ABS = 0xAC,
             INS_LDY_ABSX = 0xBC,
+
+            // STY
+            INS_STY_ZP = 0x84,
+            INS_STY_ZPX = 0x94,
+            INS_STY_ABS = 0x8C,
 
             // NOP
             INS_NOP = 0xEA,
