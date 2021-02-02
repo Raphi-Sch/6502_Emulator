@@ -55,7 +55,14 @@ void run_all_test(CPU& cpu, Memory& mem){
 
 
     // NOP
-    nb_test++; if(nop(cpu, mem)) test_passed++;
+    nb_test++; if(NOP(cpu, mem)) test_passed++;
+
+    // Stack Instruction
+    nb_test++; if(PHA(cpu, mem)) test_passed++;
+    nb_test++; if(PLA(cpu, mem)) test_passed++;
+    nb_test++; if(PHP(cpu, mem)) test_passed++;
+    nb_test++; if(PLP(cpu, mem)) test_passed++;
+
 
     
     cout << dec << test_passed << " of " << nb_test << " test passed successfully" << endl;
@@ -721,7 +728,7 @@ bool STA_INDY(CPU& cpu, Memory& mem){
 
 
 // No Operation
-bool nop(CPU& cpu, Memory& mem){
+bool NOP(CPU& cpu, Memory& mem){
     bool valid = true;
 
     cpu.reset(mem);
@@ -729,12 +736,110 @@ bool nop(CPU& cpu, Memory& mem){
     mem.write(0x0200, CPU::INS_NOP);
     cpu.step_run(mem);
 
-    if(!expected_eq(cpuCopy.Accumulator, cpu.Accumulator, "INS_NOP", "Accumulator")) valid = false;
-    if(!expected_eq(cpuCopy.registerX, cpu.registerX, "INS_NOP", "registerX")) valid = false;
-    if(!expected_eq(cpuCopy.registerY, cpu.registerY, "INS_NOP", "registerY")) valid = false;
-    if(!expected_eq(cpuCopy.ProgramCounter + 0x01, cpu.ProgramCounter, "INS_NOP", "ProgramCounter")) valid = false;
-    if(!expected_eq(cpuCopy.StackPointer, cpu.StackPointer, "INS_NOP", "StackPointer")) valid = false;
+    if(!expected_eq(cpu.Accumulator, cpuCopy.Accumulator, "INS_NOP", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_NOP", "registerX")) valid = false;
+    if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_NOP", "registerY")) valid = false;
+    if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_NOP", "ProgramCounter")) valid = false;
+    if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer, "INS_NOP", "StackPointer")) valid = false;
     if(!no_flags_affected(cpu, cpuCopy, "INS_NOP")) valid = false;
+
+    return valid;
+}
+
+// Stack Instruction
+bool PHA(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    cpu.reset(mem);
+    cpu.Accumulator = 0xDB;
+    cpu.StackPointer = 0xFA;
+
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_PHA);
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, mem.read(0x00FA), "INS_PHA", "Data store in mem[StackPointer] and Accumulator")) valid = false;
+
+    if(!expected_eq(cpu.Accumulator, cpuCopy.Accumulator, "INS_PHA", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PHA", "registerX")) valid = false;
+    if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PHA", "registerY")) valid = false;
+    if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PHA", "ProgramCounter")) valid = false;
+    if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer - 0x01, "INS_PHA", "StackPointer")) valid = false;
+    if(!no_flags_affected(cpu, cpuCopy, "INS_PHA")) valid = false;
+
+    return valid;
+}
+
+bool PLA(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    cpu.reset(mem);
+    cpu.StackPointer = 0xFB;
+    mem.write(0xFB, 0xFD);
+
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_PLA);
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.Accumulator, mem.read(0x00FB), "INS_PLA", "Data store in mem[StackPointer] and Accumulator")) valid = false;
+    if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PLA", "registerX")) valid = false;
+    if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PLA", "registerY")) valid = false;
+    if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PLA", "ProgramCounter")) valid = false;
+    if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer + 0x01, "INS_PLA", "StackPointer")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, cpuCopy, "INS_PLA")) valid = false;
+
+    return valid;
+}
+
+bool PHP(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    cpu.reset(mem);
+    cpu.StackPointer = 0xFC;
+    cpu.CarryFlag = 1;
+    cpu.ZeroFlag = 1;
+    cpu.InterruptDisable = 1;
+    cpu.DecimalMode = 1;
+    cpu.BreakCommand = 1;
+    cpu.OverflowFlag = 1;
+    cpu.NegativeFlag = 1;
+
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_PHP);
+    cpu.step_run(mem);
+
+    if(!expected_eq(mem.read(0x00FC), 0xDF,  "INS_PHP", "Data store in mem[StackPointer] and flags")) valid = false;
+    if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PHP", "registerX")) valid = false;
+    if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PHP", "registerY")) valid = false;
+    if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PHP", "ProgramCounter")) valid = false;
+    if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer - 0x01, "INS_PHP", "StackPointer")) valid = false;
+    if(!no_flags_affected(cpu, cpuCopy, "INS_PHP")) valid = false;
+
+    return valid;
+}
+
+bool PLP(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    cpu.reset(mem);
+    cpu.StackPointer = 0xFD;
+    mem.write(0x00FD, 0xDF);
+
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_PLP);
+    cpu.step_run(mem);
+
+    byte flags = cpu.CarryFlag | (cpu.ZeroFlag << 1) | (cpu.InterruptDisable << 2) | (cpu.DecimalMode << 3) | (cpu.BreakCommand << 4) | (cpu.OverflowFlag << 6) | (cpu.NegativeFlag << 7);
+
+    if(!expected_eq(flags, 0xDF,  "INS_PLP", "Data store in mem[StackPointer] and flags")) valid = false;
+    if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PLP", "registerX")) valid = false;
+    if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PLP", "registerY")) valid = false;
+    if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PLP", "ProgramCounter")) valid = false;
+    if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer + 0x01, "INS_PLP", "StackPointer")) valid = false;
 
     return valid;
 }

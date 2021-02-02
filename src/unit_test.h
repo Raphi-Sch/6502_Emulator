@@ -35,7 +35,13 @@ bool STA_INDX(CPU& cpu, Memory& mem);
 bool STA_INDY(CPU& cpu, Memory& mem);
 
 // NOP
-bool nop(CPU& cpu, Memory& mem);
+bool NOP(CPU& cpu, Memory& mem);
+
+// Stack Instruction
+bool PHA(CPU& cpu, Memory& mem);
+bool PLA(CPU& cpu, Memory& mem);
+bool PHP(CPU& cpu, Memory& mem);
+bool PLP(CPU& cpu, Memory& mem);
 
 // Expected
 bool load_register_not_changing_unexpected_flags(CPU& cpu, CPU& copy, string instruction);
