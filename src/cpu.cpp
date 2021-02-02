@@ -194,11 +194,13 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         case INS_PLA:{
             Accumulator = mem.read(StackPointer);
+            load_register_set_zero_and_negative_flag(Accumulator);
             StackPointer++;
         } break;     
 
         case INS_PHP:{
-            mem.write(StackPointer, CarryFlag & (ZeroFlag << 1) & (InterruptDisable << 2) & (DecimalMode << 3) & (BreakCommand << 4) & (OverflowFlag << 6) & (NegativeFlag << 7));
+            byte flags = CarryFlag | (ZeroFlag << 1) | (InterruptDisable << 2) | (DecimalMode << 3) | (BreakCommand << 4) | (OverflowFlag << 6) | (NegativeFlag << 7);
+            mem.write(StackPointer, flags);
             StackPointer--;
         }break;
         
