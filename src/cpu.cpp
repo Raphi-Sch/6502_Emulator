@@ -14,7 +14,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_LDA_ZP:{
             // Load data from Addr in ZeroPage <=> top 8 bits of the addr is always 0x00
             word addr = fetch_byte(mem) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, Accumulator, addr);;
+            load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
 
         case INS_LDA_ZPX:{
@@ -52,6 +52,49 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
             load_register_with_byte_from_addr(mem, Accumulator, addr);
         } break;
+
+        // STA
+        case INS_STA_ZP:{
+            // Store content of the Accumulator into memory (ZP addr)
+            word addr = fetch_byte(mem) & 0x00FF;
+            mem.write(addr, Accumulator);
+        } break;
+
+        case INS_STA_ZPX:{
+            // Store content of the Accumulator into memory (ZeroPage addr offset by registerX)
+            word addr = (fetch_byte(mem) + registerX) & 0x00FF;
+            mem.write(addr, Accumulator);
+        } break;
+
+        case INS_STA_ABS:{
+            // Store content of the Accumulator into memory (Absolute addressing)
+            word addr = fetch_word(mem);
+            mem.write(addr, Accumulator);
+        }
+
+        case INS_STA_ABSX:{
+            // Store content of the Accumulator into memory (Absolute addressing offset by registerX)
+            word addr = fetch_word(mem) + registerX;
+            mem.write(addr, Accumulator);
+        }
+
+        case INS_STA_ABSY:{
+            // Store content of the Accumulator into memory (Absolute addressing offset by registerY)
+            word addr = fetch_word(mem) + registerY;
+            mem.write(addr, Accumulator);
+        }
+
+        case INS_STA_INDX:{
+            byte addrFromIns = fetch_byte(mem);
+            word addr = addressing_mode_indexed_indirect(mem, addrFromIns);
+            mem.write(addr, Accumulator);
+        }
+
+        case INS_STA_INDY:{
+            byte addrFromIns = fetch_byte(mem);
+            word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
+            mem.write(addr, Accumulator);
+        }
 
         // LDX
         case INS_LDX_IM:{
@@ -109,7 +152,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_NOP:
             break;
 
-        // PUSH-PULL
+        // Stack Instruction
         case INS_PHA:{
             mem.write(StackPointer, Accumulator);
             StackPointer--;
@@ -179,6 +222,7 @@ word CPU::fetch_word(const Memory& mem){
     return data;
 }
 
+// Load Register
 void CPU::load_register_set_zero_and_negative_flag(byte value){
     ZeroFlag = !value;
     NegativeFlag = (value & (1 << 7));
@@ -194,6 +238,7 @@ void CPU::load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister
     load_register_set_zero_and_negative_flag(cpuRegister);
 }
 
+// Addressing mode
 word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){
     // 6502 is little endian
     byte addrFromMemLeast = mem.read((registerX + addr) & 0xFF);
