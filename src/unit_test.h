@@ -11,13 +11,28 @@ void run_all_test(CPU& cpu, Memory& mem);
 bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction);
 bool load_register_zero_page(CPU& cpu, Memory& mem, byte instruction);
 bool load_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction);
+bool load_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction);
 bool load_register_absolute(CPU& cpu, Memory& mem, byte instruction);
 bool load_register_absolute_X(CPU& cpu, Memory& mem, byte instruction);
 bool load_register_absolute_Y(CPU& cpu, Memory& mem, byte instruction);
 
-// LDA
+// LDA specific
 bool LDA_INDX(CPU& cpu, Memory& mem);
 bool LDA_INDY(CPU& cpu, Memory& mem);
+
+// Store register test
+bool store_register_zero_page(CPU& cpu, Memory& mem, byte instruction);
+bool store_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction);
+bool store_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction);
+bool store_register_absolute(CPU& cpu, Memory& mem, byte instruction);
+bool store_register_absolute_X(CPU& cpu, Memory& mem, byte instruction);
+bool store_register_absolute_Y(CPU& cpu, Memory& mem, byte instruction);
+
+// STA Specific
+bool STA_ABSX(CPU& cpu, Memory& mem);
+bool STA_ABSY(CPU& cpu, Memory& mem);
+bool STA_INDX(CPU& cpu, Memory& mem);
+bool STA_INDY(CPU& cpu, Memory& mem);
 
 // NOP
 bool nop(CPU& cpu, Memory& mem);
