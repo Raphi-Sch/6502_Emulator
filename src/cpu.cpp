@@ -280,11 +280,6 @@ word CPU::addressing_mode_zero_page_Y(const Memory& mem){
     return (fetch_byte(mem) + registerY) & 0x00FF; 
 }
 
-word CPU::addressing_mode_relative(const Memory& mem){
-
-    return 0x00;
-}
-
 word CPU::addressing_mode_absolute(const Memory& mem){
     return fetch_word(mem);
 }

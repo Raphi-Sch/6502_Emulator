@@ -324,7 +324,6 @@ class CPU{
         inline word addressing_mode_zero_page(const Memory&);
         inline word addressing_mode_zero_page_X(const Memory&);
         inline word addressing_mode_zero_page_Y(const Memory&);
-        inline word addressing_mode_relative(const Memory&);
         inline word addressing_mode_absolute(const Memory&);
         inline word addressing_mode_absolute_X(const Memory&);
         inline word addressing_mode_absolute_Y(const Memory&);
