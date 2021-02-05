@@ -91,6 +91,25 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // CLV
         case INS_CLV: OverflowFlag = 0; break;
 
+        // DEX
+        case INS_DEX: registerX--; break;
+
+        // DEY
+        case INS_DEY: registerY++; break;
+
+        // INX
+        case INS_INX: registerX++; break;
+
+        // INY
+        case INS_INY: registerY++; break;
+
+        // JSR
+        case INS_JSR: {
+            stack_push(mem, ProgramCounter & 0xFF);
+            stack_push(mem, ProgramCounter & 0xFF00);
+            ProgramCounter = fetch_word(mem);
+        } break;
+
         // LDA
         case INS_LDA_IM: load_register(mem, Accumulator, addressing_mode_immediate()); break;
         case INS_LDA_ZP: load_register(mem, Accumulator, addressing_mode_zero_page(mem)); break;
@@ -133,6 +152,24 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // PLP
         case INS_PLP: flags_restore(stack_pull(mem)); break;
 
+        // RTI
+        case INS_RTI: {
+            flags_restore(stack_pull(mem));
+            ProgramCounter = stack_pull(mem);
+        } break;
+
+        // RTS
+        case INS_RTS: ProgramCounter = stack_pull(mem) - 1; break;
+
+        // SEC
+        case INS_SEC: CarryFlag = 1; break;
+
+        // SED
+        case INS_SED: DecimalMode = 1; break;
+
+        // SEI
+        case INS_SEI: InterruptDisable = 1; break;
+
         // STA
         case INS_STA_ZP: mem.write(addressing_mode_zero_page(mem), Accumulator); break;
         case INS_STA_ZPX: mem.write(addressing_mode_zero_page_X(mem), Accumulator); break;
@@ -151,6 +188,39 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_STY_ZP: mem.write(addressing_mode_zero_page(mem), registerY); break;
         case INS_STY_ZPX: mem.write(addressing_mode_zero_page_X(mem), registerY); break;
         case INS_STY_ABS: mem.write(addressing_mode_absolute(mem), registerY); break;
+
+        // TAX
+        case INS_TAX: {
+            registerX = Accumulator;
+            set_zero_and_negative_flag(registerX);
+        } break;
+
+        // TAY
+        case INS_TAY: {
+            registerY = Accumulator;
+            set_zero_and_negative_flag(registerY);
+        }
+
+        // TSX
+        case INS_TSX: {
+            registerX = StackPointer;
+            set_zero_and_negative_flag(registerX);
+        } break;
+
+        // TXA
+        case INS_TXA: {
+            Accumulator = registerX;
+            set_zero_and_negative_flag(Accumulator);
+        } break;
+
+        // TXS
+        case INS_TXS: StackPointer = registerX; break;
+
+        // TYA
+        case INS_TYA: {
+            Accumulator = registerY;
+            set_zero_and_negative_flag(Accumulator);
+        }
 
         default:{
             cout << "CPU : Operation code " << hex << int(OpCode) << " not handle" << endl;
