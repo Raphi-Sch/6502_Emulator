@@ -1,6 +1,8 @@
 #include <cstdint>
 #include "memory.h"
 
+// Reference : http://www.obelisk.me.uk/6502/ http://www.emulator101.com/6502-addressing-modes.html
+
 typedef uint8_t byte;
 typedef uint16_t word;
 
