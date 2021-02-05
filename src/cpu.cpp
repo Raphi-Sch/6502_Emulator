@@ -5,186 +5,50 @@ using namespace std;
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
         // LDA
-        case INS_LDA_IM:{
-            // Load the next byte directly into the Accummulator
-            load_register_with_next_byte(mem, Accumulator);
-            break;
-        }
-
-        case INS_LDA_ZP:{
-            // Load data from Addr in ZeroPage <=> top 8 bits of the addr is always 0x00
-            word addr = fetch_byte(mem) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
-
-        case INS_LDA_ZPX:{
-            // Load data from Addr in ZeroPage offset by registerX
-            word addr = (fetch_byte(mem) + registerX) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
-
-        case INS_LDA_ABS:{
-            // Load data from anywhere in memory, absolute addressing
-            word addr = fetch_word(mem);
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
-
-        case INS_LDA_ABSX:{
-            // Load data from anywhere in memory, absolute addressing offset by registerX
-            word addr = fetch_word(mem) + registerX;
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
-
-        case INS_LDA_ABSY:{
-            // Load data from anywhere in memory, absolute addressing offset by registerY
-            word addr = fetch_word(mem) + registerY;
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
-
-        case INS_LDA_INDX:{
-            byte addrFromIns = fetch_byte(mem);
-            word addr = addressing_mode_indexed_indirect(mem, addrFromIns);
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
-
-        case INS_LDA_INDY:{
-            byte addrFromIns = fetch_byte(mem);
-            word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
-            load_register_with_byte_from_addr(mem, Accumulator, addr);
-        } break;
+        case INS_LDA_IM: load_register_with_next_byte(mem, Accumulator); break;
+        case INS_LDA_ZP: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_zero_page(mem)); break;
+        case INS_LDA_ZPX: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_zero_page_X(mem)); break;
+        case INS_LDA_ABS: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_absolute(mem)); break;
+        case INS_LDA_ABSX: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_absolute_X(mem)); break;
+        case INS_LDA_ABSY: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_absolute_Y(mem)); break;
+        case INS_LDA_INDX: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_indexed_indirect(mem)); break;
+        case INS_LDA_INDY: load_register_with_byte_from_addr(mem, Accumulator, addressing_mode_indirect_indexed(mem)); break;
 
         // STA
-        case INS_STA_ZP:{
-            // Store content of the Accumulator into memory (ZP addr)
-            word addr = fetch_byte(mem) & 0x00FF;
-            mem.write(addr, Accumulator);
-        } break;
-
-        case INS_STA_ZPX:{
-            // Store content of the Accumulator into memory (ZeroPage addr offset by registerX)
-            word addr = (fetch_byte(mem) + registerX) & 0x00FF;
-            mem.write(addr, Accumulator);
-        } break;
-
-        case INS_STA_ABS:{
-            // Store content of the Accumulator into memory (Absolute addressing)
-            word addr = fetch_word(mem);
-            mem.write(addr, Accumulator);
-        } break;
-
-        case INS_STA_ABSX:{
-            // Store content of the Accumulator into memory (Absolute addressing offset by registerX)
-            word addr = fetch_word(mem) + registerX;
-            mem.write(addr, Accumulator);
-        } break;
-
-        case INS_STA_ABSY:{
-            // Store content of the Accumulator into memory (Absolute addressing offset by registerY)
-            word addr = fetch_word(mem) + registerY;
-            mem.write(addr, Accumulator);
-        } break;
-
-        case INS_STA_INDX:{
-            byte addrFromIns = fetch_byte(mem);
-            word addr = addressing_mode_indexed_indirect(mem, addrFromIns);
-            mem.write(addr, Accumulator);
-        } break;
-
-        case INS_STA_INDY:{
-            byte addrFromIns = fetch_byte(mem);
-            word addr = addressing_mode_indirect_indexed(mem, addrFromIns);
-            mem.write(addr, Accumulator);
-        } break;
+        case INS_STA_ZP: mem.write(addressing_mode_zero_page(mem), Accumulator); break;
+        case INS_STA_ZPX: mem.write(addressing_mode_zero_page_X(mem), Accumulator); break;
+        case INS_STA_ABS: mem.write(addressing_mode_absolute(mem), Accumulator); break;
+        case INS_STA_ABSX: mem.write(addressing_mode_absolute_X(mem), Accumulator); break;
+        case INS_STA_ABSY: mem.write(addressing_mode_absolute_Y(mem), Accumulator); break;
+        case INS_STA_INDX: mem.write(addressing_mode_indexed_indirect(mem), Accumulator); break;
+        case INS_STA_INDY: mem.write(addressing_mode_indirect_indexed(mem), Accumulator); break;
 
         // LDX
-        case INS_LDX_IM:{
-            load_register_with_next_byte(mem, registerX);
-            break;
-        }
-
-        case INS_LDX_ZP:{
-            word addr = fetch_byte(mem) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, registerX, addr);;
-        } break;
-
-        case INS_LDX_ZPY:{
-            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, registerX, addr);
-        } break;
-
-        case INS_LDX_ABS:{
-            word addr = fetch_word(mem);
-            load_register_with_byte_from_addr(mem, registerX, addr);
-        } break;
-
-        case INS_LDX_ABSY:{
-            word addr = fetch_word(mem) + registerY;
-            load_register_with_byte_from_addr(mem, registerX, addr);
-        } break;
+        case INS_LDX_IM: load_register_with_next_byte(mem, registerX); break;
+        case INS_LDX_ZP: load_register_with_byte_from_addr(mem, registerX, addressing_mode_zero_page(mem)); break;
+        case INS_LDX_ZPY: load_register_with_byte_from_addr(mem, registerX, addressing_mode_zero_page_Y(mem)); break;
+        case INS_LDX_ABS: load_register_with_byte_from_addr(mem, registerX, addressing_mode_absolute(mem)); break;
+        case INS_LDX_ABSY: load_register_with_byte_from_addr(mem, registerX, addressing_mode_absolute_Y(mem)); break;
 
         // STX
-        case INS_STX_ZP:{
-            // Store content of the Accumulator into memory (ZP addr)
-            word addr = fetch_byte(mem) & 0x00FF;
-            mem.write(addr, registerX);
-        } break;
-
-        case INS_STX_ZPY:{
-            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
-            mem.write(addr, registerX);
-        } break;
-
-        case INS_STX_ABS:{
-            word addr = fetch_word(mem);
-            mem.write(addr, registerX);
-        } break;
+        case INS_STX_ZP: mem.write(addressing_mode_zero_page(mem), registerX); break;
+        case INS_STX_ZPY: mem.write(addressing_mode_zero_page_Y(mem), registerX); break;
+        case INS_STX_ABS: mem.write(addressing_mode_absolute(mem), registerX); break;
 
         // LDY
-        case INS_LDY_IM:{
-            load_register_with_next_byte(mem, registerY);
-            break;
-        }
-
-        case INS_LDY_ZP:{
-            word addr = fetch_byte(mem) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, registerY, addr);;
-        } break;
-
-        case INS_LDY_ZPX:{
-            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
-            load_register_with_byte_from_addr(mem, registerY, addr);
-        } break;
-
-        case INS_LDY_ABS:{
-            word addr = fetch_word(mem);
-            load_register_with_byte_from_addr(mem, registerY, addr);
-        } break;
-
-        case INS_LDY_ABSX:{
-            word addr = fetch_word(mem) + registerX;
-            load_register_with_byte_from_addr(mem, registerY, addr);
-        } break;
+        case INS_LDY_IM: load_register_with_next_byte(mem, registerY); break;
+        case INS_LDY_ZP: load_register_with_byte_from_addr(mem, registerY, addressing_mode_zero_page(mem)); break;
+        case INS_LDY_ZPX: load_register_with_byte_from_addr(mem, registerY, addressing_mode_zero_page_X(mem)); break;
+        case INS_LDY_ABS: load_register_with_byte_from_addr(mem, registerY, addressing_mode_absolute(mem)); break;
+        case INS_LDY_ABSX: load_register_with_byte_from_addr(mem, registerY, addressing_mode_absolute_X(mem)); break;
 
         // STY
-        case INS_STY_ZP:{
-            // Store content of the Accumulator into memory (ZP addr)
-            word addr = fetch_byte(mem) & 0x00FF;
-            mem.write(addr, registerY);
-        } break;
-
-        case INS_STY_ZPX:{
-            word addr = (fetch_byte(mem) + registerY) & 0x00FF; 
-            mem.write(addr, registerY);
-        } break;
-
-        case INS_STY_ABS:{
-            word addr = fetch_word(mem);
-            mem.write(addr, registerY);
-        } break;
+        case INS_STY_ZP: mem.write(addressing_mode_zero_page(mem), registerY); break;
+        case INS_STY_ZPX: mem.write(addressing_mode_zero_page_X(mem), registerY); break;
+        case INS_STY_ABS: mem.write(addressing_mode_absolute(mem), registerY); break;
 
         // NOP
-        case INS_NOP:
-            break;
+        case INS_NOP: break;
 
         // Stack Instruction
         case INS_PHA:{
@@ -275,17 +139,51 @@ void CPU::load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister
 }
 
 // Addressing mode
-word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){
+word CPU::addressing_mode_zero_page(const Memory& mem){
+    // Get address of memory in ZeroPage (top 8 bits of the addr is always 0x00--)
+    return fetch_byte(mem) & 0x00FF; 
+}
+
+word CPU::addressing_mode_zero_page_X(const Memory& mem){
+    // Get address of memory in ZeroPage offset by registerX, address wrap around at 0xFF
+    return (fetch_byte(mem) + registerX) & 0x00FF; 
+}
+
+word CPU::addressing_mode_zero_page_Y(const Memory& mem){
+    // Get address of memory in ZeroPage offset by registerY, address wrap around at 0xFF
+    return (fetch_byte(mem) + registerY) & 0x00FF; 
+}
+
+word CPU::addressing_mode_relative(const Memory& mem){
+    
+    return 0x00;
+}
+
+word CPU::addressing_mode_absolute(const Memory& mem){
+    return fetch_word(mem);
+}
+
+word CPU::addressing_mode_absolute_X(const Memory& mem){
+    return fetch_word(mem) + registerX;
+}
+
+word CPU::addressing_mode_absolute_Y(const Memory& mem){
+    return fetch_word(mem) + registerY;
+}
+
+word CPU::addressing_mode_indexed_indirect(const Memory& mem){
     // 6502 is little endian
     /*byte addrFromMemLeast = mem.read((registerX + addr) & 0xFF);
     byte addrFromMemMost  = mem.read((registerX + addr + 0x01) & 0xFF);
     return (addrFromMemLeast | (addrFromMemMost << 8));*/
+    word addr = fetch_byte(mem);
     return (mem.read((registerX + addr + 0x01) & 0xFF) << 8) | mem.read((registerX + addr) & 0xFF);
 }
 
-word CPU::addressing_mode_indirect_indexed(const Memory& mem, byte addr){
+word CPU::addressing_mode_indirect_indexed(const Memory& mem){
     /*byte addrFromMemLeast = mem.read(addr);
     byte addrFromMemMost  = mem.read((addr + 0x01) & 0xFF);
     return (addrFromMemLeast | (addrFromMemMost << 8)) + registerY;*/
+    word addr = fetch_byte(mem);
     return (mem.read((addr + 0x01) & 0xFF) << 8) | mem.read(addr) + registerY;
 }
