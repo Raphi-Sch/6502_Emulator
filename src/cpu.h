@@ -301,11 +301,11 @@ class CPU{
         word fetch_word(const Memory& mem);
 
         // Load register
-        void load_register_with_next_byte(const Memory& mem, byte& cpuRegister);
-        void load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister, word addr);
+        void load_register(const Memory& mem, byte& cpuRegister, word addr);
         void load_register_set_zero_and_negative_flag(byte value);
 
         // Addressing modes
+        inline word addressing_mode_immediate();
         inline word addressing_mode_zero_page(const Memory&);
         inline word addressing_mode_zero_page_X(const Memory&);
         inline word addressing_mode_zero_page_Y(const Memory&);
