@@ -115,6 +115,24 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_LDY_ABS: load_register(mem, registerY, addressing_mode_absolute(mem)); break;
         case INS_LDY_ABSX: load_register(mem, registerY, addressing_mode_absolute_X(mem)); break;
 
+        // NOP
+        case INS_NOP: break;
+
+        // PHA
+        case INS_PHA: stack_push(mem, Accumulator); break;
+
+        // PLA
+        case INS_PLA:{
+            Accumulator = stack_pull(mem);
+            set_zero_and_negative_flag(Accumulator);
+        } break;     
+
+        // PHP
+        case INS_PHP: stack_push(mem, flags_save()); break;
+        
+        // PLP
+        case INS_PLP: flags_restore(stack_pull(mem)); break;
+
         // STA
         case INS_STA_ZP: mem.write(addressing_mode_zero_page(mem), Accumulator); break;
         case INS_STA_ZPX: mem.write(addressing_mode_zero_page_X(mem), Accumulator); break;
@@ -133,24 +151,6 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_STY_ZP: mem.write(addressing_mode_zero_page(mem), registerY); break;
         case INS_STY_ZPX: mem.write(addressing_mode_zero_page_X(mem), registerY); break;
         case INS_STY_ABS: mem.write(addressing_mode_absolute(mem), registerY); break;
-
-        // NOP
-        case INS_NOP: break;
-
-        // PHA
-        case INS_PHA: stack_push(mem, Accumulator); break;
-
-        // PLA
-        case INS_PLA:{
-            Accumulator = stack_pull(mem);
-            set_zero_and_negative_flag(Accumulator);
-        } break;     
-
-        // PHP
-        case INS_PHP: stack_push(mem, flags_save()); break;
-        
-        // PLP
-        case INS_PLP: flags_restore(stack_pull(mem)); break;
 
         default:{
             cout << "CPU : Operation code " << hex << int(OpCode) << " not handle" << endl;
