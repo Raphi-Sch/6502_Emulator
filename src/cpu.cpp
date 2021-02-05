@@ -95,7 +95,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_DEX: registerX--; break;
 
         // DEY
-        case INS_DEY: registerY++; break;
+        case INS_DEY: registerY--; break;
 
         // INX
         case INS_INX: registerX++; break;
