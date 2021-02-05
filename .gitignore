@@ -1,6 +1,2 @@
-*/main
-*/memory
-*/cpu
-*/unit_test
-
 .vscode/
+obj/*
