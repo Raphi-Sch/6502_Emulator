@@ -13,7 +13,13 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
             set_zero_and_negative_flag(Accumulator);
         } break;
 
-        
+        case INS_ADC_ZP: add_with_carry(mem, addressing_mode_zero_page(mem)); break;
+        case INS_ADC_ZPX: add_with_carry(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_ADC_ABS: add_with_carry(mem, addressing_mode_absolute(mem)); break;
+        case INS_ADC_ABSX: add_with_carry(mem, addressing_mode_absolute_X(mem)); break;
+        case INS_ADC_ABSY: add_with_carry(mem, addressing_mode_absolute_Y(mem)); break;
+        case INS_ADC_INDX: add_with_carry(mem, addressing_mode_indexed_indirect(mem)); break;
+        case INS_ADC_INDY: add_with_carry(mem, addressing_mode_indirect_indexed(mem)); break;
 
         // AND
         case INS_AND_IM: Accumulator = Accumulator & mem.read(addressing_mode_immediate()); break;
@@ -38,28 +44,52 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_ASL_ABSX: arithmetic_shift_left(mem, addressing_mode_absolute_X(mem)); break;
 
         // BCC
-        case INS_BCC: {
-            if(!CarryFlag){
-                byte offset = fetch_byte(mem);
-                ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
-            }
-        } break;
+        case INS_BCC: if(!CarryFlag) relative_displacement(mem); break;
 
         // BCS
-        case INS_BCS: {
-            if(CarryFlag){
-                byte offset = fetch_byte(mem);
-                ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
-            }
-        } break;
+        case INS_BCS: if(CarryFlag) relative_displacement(mem); break;
 
         // BEQ
-        case INS_BEQ: {
-            if(ZeroFlag){
-                byte offset = fetch_byte(mem);
-                ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
-            }
+        case INS_BEQ: if(ZeroFlag) relative_displacement(mem); break;
+
+        // BIT
+        case INS_BIT_ZP: bit_test(mem, addressing_mode_zero_page(mem)); break;
+        case INS_BIT_ABS: bit_test(mem, addressing_mode_absolute(mem)); break;
+
+        // BMI
+        case INS_BMI: if(NegativeFlag) relative_displacement(mem); break;
+
+        // BNE
+        case INS_BNE: if(!ZeroFlag) relative_displacement(mem); break;
+
+        // BPL
+        case INS_BPL: if(!NegativeFlag) relative_displacement(mem); break;
+
+        // BRK
+        case INS_BRK: {
+            stack_push(mem, ProgramCounter);
+            stack_push(mem, flags_save());
+            ProgramCounter = fetch_word(mem);
+            BreakCommand = 1;
         } break;
+
+        // BVC
+        case INS_BVC: if(!OverflowFlag) relative_displacement(mem); break;
+
+        // BVS
+        case INS_BVS: if(OverflowFlag) relative_displacement(mem); break;
+
+        // CLC
+        case INS_CLC: CarryFlag = 0; break;
+
+        // CLD
+        case INS_CLD: DecimalMode = 0; break;
+
+        // CLI
+        case INS_CLI: InterruptDisable = 0; break;
+
+        // CLV
+        case INS_CLV: OverflowFlag = 0; break;
 
         // LDA
         case INS_LDA_IM: load_register(mem, Accumulator, addressing_mode_immediate()); break;
@@ -107,35 +137,20 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // NOP
         case INS_NOP: break;
 
-        // Stack Instruction
-        case INS_PHA:{
-            mem.write(StackPointer, Accumulator);
-            StackPointer--;
-        } break;
+        // PHA
+        case INS_PHA: stack_push(mem, Accumulator); break;
 
+        // PLA
         case INS_PLA:{
-            Accumulator = mem.read(StackPointer);
+            Accumulator = stack_pull(mem);
             set_zero_and_negative_flag(Accumulator);
-            StackPointer++;
         } break;     
 
-        case INS_PHP:{
-            byte flags = CarryFlag | (ZeroFlag << 1) | (InterruptDisable << 2) | (DecimalMode << 3) | (BreakCommand << 4) | (OverflowFlag << 6) | (NegativeFlag << 7);
-            mem.write(StackPointer, flags);
-            StackPointer--;
-        }break;
+        // PHP
+        case INS_PHP: stack_push(mem, flags_save()); break;
         
-        case INS_PLP:{
-            byte flags = mem.read(StackPointer);
-            CarryFlag = flags & 0x1;
-            ZeroFlag = (flags >> 1) & 0x1;
-            InterruptDisable = (flags >> 2) & 0x1;
-            DecimalMode = (flags >> 3) & 0x1;
-            BreakCommand = (flags >> 4) & 0x1;
-            OverflowFlag = (flags >> 6) & 0x1;
-            NegativeFlag = (flags >> 7) & 0x1;
-            StackPointer++;
-        }break;
+        // PLP
+        case INS_PLP: flags_restore(stack_pull(mem)); break;
 
         default:{
             cout << "CPU : Operation code " << hex << int(OpCode) << " not handle" << endl;
@@ -186,6 +201,51 @@ void CPU::arithmetic_shift_left(Memory& mem, word addr){
     data = data << 1;
     mem.write(addr, data);
     NegativeFlag = data & 0x80;
+}
+
+void CPU::add_with_carry(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    word tmp = Accumulator + data + CarryFlag;
+    CarryFlag = tmp > 0xFF;
+    mem.write(addr, tmp);
+}
+
+void CPU::bit_test(Memory& mem, word addr){
+    byte tmp = Accumulator & mem.read(addr);
+    ZeroFlag = !tmp;
+    OverflowFlag = (tmp >> 6) & 0x1;
+    NegativeFlag = (tmp >> 7) & 0x1;
+}
+
+void CPU::relative_displacement(const Memory& mem){
+    byte offset = fetch_byte(mem);
+    ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
+}
+
+// Stack
+void CPU::stack_push(Memory& mem, byte data){
+    mem.write(0x0100 + StackPointer, data);
+    StackPointer--;
+}
+
+byte CPU::stack_pull(Memory& mem){
+    StackPointer++;
+    return mem.read(StackPointer);
+}
+
+// Flags
+byte CPU::flags_save(){
+    return CarryFlag | (ZeroFlag << 1) | (InterruptDisable << 2) | (DecimalMode << 3) | (BreakCommand << 4) | (OverflowFlag << 6) | (NegativeFlag << 7);
+}
+
+void CPU::flags_restore(byte flags){
+    CarryFlag = flags & 0x1;
+    ZeroFlag = (flags >> 1) & 0x1;
+    InterruptDisable = (flags >> 2) & 0x1;
+    DecimalMode = (flags >> 3) & 0x1;
+    BreakCommand = (flags >> 4) & 0x1;
+    OverflowFlag = (flags >> 6) & 0x1;
+    NegativeFlag = (flags >> 7) & 0x1;
 }
 
 // Load Register

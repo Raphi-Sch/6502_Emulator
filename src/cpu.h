@@ -303,6 +303,17 @@ class CPU{
         // Arithmetic
         void add_with_carry(Memory& mem, word addr);
         void arithmetic_shift_left(Memory& mem, word addr);
+        void bit_test(Memory& mem, word addr);
+
+        void relative_displacement(const Memory& mem);
+
+        // Stack
+        void CPU::stack_push(Memory& mem, byte data);
+        byte CPU::stack_pull(Memory& mem);
+
+        // Flags
+        inline byte CPU::flags_save();
+        void CPU::flags_restore(byte flags);
 
         // Load register
         void load_register(const Memory& mem, byte& cpuRegister, word addr);
