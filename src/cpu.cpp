@@ -145,6 +145,7 @@ void CPU::load_register_set_zero_and_negative_flag(byte value){
 
 // Addressing mode
 word CPU::addressing_mode_immediate(){
+    // Return value of ProgramCounter, then increment it
     return ProgramCounter++;
 }
 
