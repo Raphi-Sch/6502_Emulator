@@ -159,7 +159,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         } break;
 
         // RTS
-        case INS_RTS: ProgramCounter = ((stack_pull(mem) << 8) + stack_pull(mem)) - 1; break;
+        case INS_RTS: ProgramCounter = (stack_pull(mem) + (stack_pull(mem) << 8)) - 1; break;
 
         // SEC
         case INS_SEC: CarryFlag = 1; break;
