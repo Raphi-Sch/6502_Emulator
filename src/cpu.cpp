@@ -277,13 +277,15 @@ void CPU::load_register_with_byte_from_addr(const Memory& mem, byte& cpuRegister
 // Addressing mode
 word CPU::addressing_mode_indexed_indirect(const Memory& mem, byte addr){
     // 6502 is little endian
-    byte addrFromMemLeast = mem.read((registerX + addr) & 0xFF);
+    /*byte addrFromMemLeast = mem.read((registerX + addr) & 0xFF);
     byte addrFromMemMost  = mem.read((registerX + addr + 0x01) & 0xFF);
-    return (addrFromMemLeast | (addrFromMemMost << 8));
+    return (addrFromMemLeast | (addrFromMemMost << 8));*/
+    return (mem.read((registerX + addr + 0x01) & 0xFF) << 8) | mem.read((registerX + addr) & 0xFF);
 }
 
 word CPU::addressing_mode_indirect_indexed(const Memory& mem, byte addr){
-    byte addrFromMemLeast = mem.read(addr);
+    /*byte addrFromMemLeast = mem.read(addr);
     byte addrFromMemMost  = mem.read((addr + 0x01) & 0xFF);
-    return (addrFromMemLeast | (addrFromMemMost << 8)) + registerY;
+    return (addrFromMemLeast | (addrFromMemMost << 8)) + registerY;*/
+    return (mem.read((addr + 0x01) & 0xFF) << 8) | mem.read(addr) + registerY;
 }

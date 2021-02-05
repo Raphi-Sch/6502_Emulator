@@ -306,7 +306,7 @@ class CPU{
         void load_register_set_zero_and_negative_flag(byte value);
 
         // Addressing modes
-        word addressing_mode_indexed_indirect(const Memory& mem, byte addr);
-        word addressing_mode_indirect_indexed(const Memory& mem, byte addr);
+        inline word addressing_mode_indexed_indirect(const Memory& mem, byte addr);
+        inline word addressing_mode_indirect_indexed(const Memory& mem, byte addr);
 
 };
