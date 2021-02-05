@@ -301,6 +301,7 @@ class CPU{
         word fetch_word(const Memory& mem);
 
         // Arithmetic
+        void add_with_carry(Memory& mem, word addr);
         void arithmetic_shift_left(Memory& mem, word addr);
 
         // Load register

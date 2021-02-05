@@ -4,6 +4,17 @@ using namespace std;
 
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
+        // ACD
+        case INS_ADC_IM: {
+            byte data = fetch_byte(mem);
+            word tmp = Accumulator + data + CarryFlag;
+            CarryFlag = tmp > 0xFF;
+            Accumulator = tmp & 0xFF;
+            set_zero_and_negative_flag(Accumulator);
+        } break;
+
+        
+
         // AND
         case INS_AND_IM: Accumulator = Accumulator & mem.read(addressing_mode_immediate()); break;
         case INS_AND_ZP: Accumulator = Accumulator & mem.read(addressing_mode_zero_page(mem)); break;
