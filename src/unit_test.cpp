@@ -447,10 +447,10 @@ bool LDA_INDY(CPU& cpu, Memory& mem){
 
     cpu.step_run(mem);
 
-    if(!expected_eq(cpu.Accumulator, 0xF8, "INS_LDA_INDX", "Accumulator")) valid = false;
-    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDX", "ZeroFlag")) valid = false;
-    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDX", "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDX")) valid = false;
+    if(!expected_eq(cpu.Accumulator, 0xF8, "INS_LDA_INDY", "Accumulator")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDY", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDY", "NegativeFlag")) valid = false;
+    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDY")) valid = false;
 
     return valid;
 }
