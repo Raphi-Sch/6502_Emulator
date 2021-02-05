@@ -5,7 +5,6 @@ using namespace std;
 void CPU::execute_operation(Memory &mem, byte OpCode){
     switch(OpCode){
         // LDA
-        //case INS_LDA_IM: load_register_with_next_byte(mem, Accumulator); break;
         case INS_LDA_IM: load_register(mem, Accumulator, addressing_mode_immediate()); break;
         case INS_LDA_ZP: load_register(mem, Accumulator, addressing_mode_zero_page(mem)); break;
         case INS_LDA_ZPX: load_register(mem, Accumulator, addressing_mode_zero_page_X(mem)); break;
