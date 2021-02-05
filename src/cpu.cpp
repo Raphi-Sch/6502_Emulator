@@ -7,7 +7,8 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // AND
         case INS_AND_IM: Accumulator = Accumulator & mem.read(addressing_mode_immediate()); break;
         case INS_AND_ZP: Accumulator = Accumulator & mem.read(addressing_mode_zero_page(mem)); break;
-        case INS_AND_ZPX: Accumulator = Accumulator & mem.read(addressing_mode_absolute(mem)); break;
+        case INS_AND_ZPX: Accumulator = Accumulator & mem.read(addressing_mode_zero_page_X(mem)); break;
+        case INS_AND_ABS: Accumulator = Accumulator & mem.read(addressing_mode_absolute(mem)); break;
         case INS_AND_ABSX: Accumulator = Accumulator & mem.read(addressing_mode_absolute_X(mem)); break;
         case INS_AND_ABSY: Accumulator = Accumulator & mem.read(addressing_mode_absolute_Y(mem)); break;
         case INS_AND_INDX: Accumulator = Accumulator & mem.read(addressing_mode_indexed_indirect(mem)); break;
