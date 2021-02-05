@@ -300,9 +300,12 @@ class CPU{
         byte fetch_byte(const Memory& mem);
         word fetch_word(const Memory& mem);
 
+        // Arithmetic
+        void arithmetic_shift_left(Memory& mem, word addr);
+
         // Load register
         void load_register(const Memory& mem, byte& cpuRegister, word addr);
-        void load_register_set_zero_and_negative_flag(byte value);
+        void set_zero_and_negative_flag(byte value);
 
         // Addressing modes
         inline word addressing_mode_immediate();

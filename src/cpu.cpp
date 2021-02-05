@@ -14,6 +14,42 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_AND_INDX: Accumulator = Accumulator & mem.read(addressing_mode_indexed_indirect(mem)); break;
         case INS_AND_INDY: Accumulator = Accumulator & mem.read(addressing_mode_indirect_indexed(mem)); break;
 
+        // ASL
+        case INS_ASL_ACC:{
+            CarryFlag = (Accumulator & 0x80) >> 7;
+            Accumulator = Accumulator << 1;
+            set_zero_and_negative_flag(Accumulator);
+        } break;
+
+        case INS_ASL_ZP: arithmetic_shift_left(mem, addressing_mode_zero_page(mem)); break;
+        case INS_ASL_ZPX: arithmetic_shift_left(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_ASL_ABS: arithmetic_shift_left(mem, addressing_mode_absolute(mem)); break;
+        case INS_ASL_ABSX: arithmetic_shift_left(mem, addressing_mode_absolute_X(mem)); break;
+
+        // BCC
+        case INS_BCC: {
+            if(!CarryFlag){
+                byte offset = fetch_byte(mem);
+                ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
+            }
+        } break;
+
+        // BCS
+        case INS_BCS: {
+            if(CarryFlag){
+                byte offset = fetch_byte(mem);
+                ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
+            }
+        } break;
+
+        // BEQ
+        case INS_BEQ: {
+            if(ZeroFlag){
+                byte offset = fetch_byte(mem);
+                ((offset & 0x80) >> 7) ? ProgramCounter -= offset : ProgramCounter += offset;
+            }
+        } break;
+
         // LDA
         case INS_LDA_IM: load_register(mem, Accumulator, addressing_mode_immediate()); break;
         case INS_LDA_ZP: load_register(mem, Accumulator, addressing_mode_zero_page(mem)); break;
@@ -68,7 +104,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         case INS_PLA:{
             Accumulator = mem.read(StackPointer);
-            load_register_set_zero_and_negative_flag(Accumulator);
+            set_zero_and_negative_flag(Accumulator);
             StackPointer++;
         } break;     
 
@@ -132,15 +168,24 @@ word CPU::fetch_word(const Memory& mem){
     return data;
 }
 
+// Arithmetic
+void CPU::arithmetic_shift_left(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    CarryFlag = (data & 0x80) >> 7;
+    data = data << 1;
+    mem.write(addr, data);
+    NegativeFlag = data & 0x80;
+}
+
 // Load Register
 void CPU::load_register(const Memory& mem, byte& cpuRegister, word addr){
     cpuRegister = mem.read(addr);
-    load_register_set_zero_and_negative_flag(cpuRegister);
+    set_zero_and_negative_flag(cpuRegister);
 }
 
-void CPU::load_register_set_zero_and_negative_flag(byte value){
+void CPU::set_zero_and_negative_flag(byte value){
     ZeroFlag = !value;
-    NegativeFlag = (value & (1 << 7));
+    NegativeFlag = value & 0x80;
 }
 
 // Addressing mode
