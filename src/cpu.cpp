@@ -105,7 +105,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         // JSR
         case INS_JSR: {
-            stack_push(mem, ProgramCounter & 0xFF);
+            stack_push(mem, ProgramCounter & 0x00FF);
             stack_push(mem, ProgramCounter & 0xFF00);
             ProgramCounter = fetch_word(mem);
         } break;
