@@ -14,6 +14,20 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_LDA_INDX: load_register(mem, Accumulator, addressing_mode_indexed_indirect(mem)); break;
         case INS_LDA_INDY: load_register(mem, Accumulator, addressing_mode_indirect_indexed(mem)); break;
 
+        // LDX
+        case INS_LDX_IM: load_register(mem, registerX, addressing_mode_immediate()); break;
+        case INS_LDX_ZP: load_register(mem, registerX, addressing_mode_zero_page(mem)); break;
+        case INS_LDX_ZPY: load_register(mem, registerX, addressing_mode_zero_page_Y(mem)); break;
+        case INS_LDX_ABS: load_register(mem, registerX, addressing_mode_absolute(mem)); break;
+        case INS_LDX_ABSY: load_register(mem, registerX, addressing_mode_absolute_Y(mem)); break;
+
+        // LDY
+        case INS_LDY_IM: load_register(mem, registerY, addressing_mode_immediate()); break;
+        case INS_LDY_ZP: load_register(mem, registerY, addressing_mode_zero_page(mem)); break;
+        case INS_LDY_ZPX: load_register(mem, registerY, addressing_mode_zero_page_X(mem)); break;
+        case INS_LDY_ABS: load_register(mem, registerY, addressing_mode_absolute(mem)); break;
+        case INS_LDY_ABSX: load_register(mem, registerY, addressing_mode_absolute_X(mem)); break;
+
         // STA
         case INS_STA_ZP: mem.write(addressing_mode_zero_page(mem), Accumulator); break;
         case INS_STA_ZPX: mem.write(addressing_mode_zero_page_X(mem), Accumulator); break;
@@ -23,24 +37,10 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_STA_INDX: mem.write(addressing_mode_indexed_indirect(mem), Accumulator); break;
         case INS_STA_INDY: mem.write(addressing_mode_indirect_indexed(mem), Accumulator); break;
 
-        // LDX
-        case INS_LDX_IM: load_register(mem, registerX, addressing_mode_immediate()); break;
-        case INS_LDX_ZP: load_register(mem, registerX, addressing_mode_zero_page(mem)); break;
-        case INS_LDX_ZPY: load_register(mem, registerX, addressing_mode_zero_page_Y(mem)); break;
-        case INS_LDX_ABS: load_register(mem, registerX, addressing_mode_absolute(mem)); break;
-        case INS_LDX_ABSY: load_register(mem, registerX, addressing_mode_absolute_Y(mem)); break;
-
         // STX
         case INS_STX_ZP: mem.write(addressing_mode_zero_page(mem), registerX); break;
         case INS_STX_ZPY: mem.write(addressing_mode_zero_page_Y(mem), registerX); break;
         case INS_STX_ABS: mem.write(addressing_mode_absolute(mem), registerX); break;
-
-        // LDY
-        case INS_LDY_IM: load_register(mem, registerY, addressing_mode_immediate()); break;
-        case INS_LDY_ZP: load_register(mem, registerY, addressing_mode_zero_page(mem)); break;
-        case INS_LDY_ZPX: load_register(mem, registerY, addressing_mode_zero_page_X(mem)); break;
-        case INS_LDY_ABS: load_register(mem, registerY, addressing_mode_absolute(mem)); break;
-        case INS_LDY_ABSX: load_register(mem, registerY, addressing_mode_absolute_X(mem)); break;
 
         // STY
         case INS_STY_ZP: mem.write(addressing_mode_zero_page(mem), registerY); break;
