@@ -105,7 +105,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         // JMP
         case INS_JMP_ABS: ProgramCounter = fetch_word(mem); break;
-        case INS_JMP_IND: ProgramCounter = mem.read(fetch_byte(mem)) | (mem.read(fetch_byte(mem)) << 8); break;
+        case INS_JMP_IND: ProgramCounter = mem.read(fetch_word(mem)) | (mem.read(fetch_word(mem)) << 8); break;
 
         // JSR
         case INS_JSR: {

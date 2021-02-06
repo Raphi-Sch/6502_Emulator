@@ -14,6 +14,10 @@ void run_all_test(CPU& cpu, Memory& mem){
     nb_test++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
     nb_test++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
 
+    // JMP
+    nb_test++; if(jump(cpu, mem, CPU::INS_JMP_ABS)) test_passed++;
+    nb_test++; if(jump(cpu, mem, CPU::INS_JMP_IND)) test_passed++;
+
     // LDA
     nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) test_passed++;
     nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDA_ZP)) test_passed++;
@@ -100,7 +104,7 @@ bool increment_register(CPU& cpu, Memory& mem, byte instruction){
             break;
 
         default:
-            cout << "load_register_immediate doesn't handle : " << hex << (int)instruction << endl;
+            cout << "increment_register doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
 
@@ -138,7 +142,7 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
             break;
 
         default:
-            cout << "load_register_immediate doesn't handle : " << hex << (int)instruction << endl;
+            cout << "decrement_register doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
 
@@ -149,6 +153,51 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
     cpu.step_run(mem);
 
     if(!expected_eq(cpuRegister, 0x09, instructionName, registerName)) valid = false;
+    if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+
+    return valid;
+}
+
+// Jump
+bool jump(CPU& cpu, Memory& mem, byte instruction){
+    bool valid = true;
+    string instructionName;
+    byte* cpuRegister;
+    word expected;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU CpuCopy = cpu;
+
+    switch(instruction){
+        case CPU::INS_JMP_ABS:
+            instructionName = "INS_JMP_ABS";
+            mem.write(0x0201, 0xCD);
+            mem.write(0x0202, 0XAB);
+            expected = 0xABCD;
+            break;
+
+        case CPU::INS_JMP_IND:
+            instructionName = "INS_JMP_IND";
+            mem.write(0x0201, 0x34);
+            mem.write(0x0202, 0x12);
+            mem.write(0x0203, 0x35);
+            mem.write(0x0204, 0x12);
+            mem.write(0x1234, 0xCD);
+            mem.write(0x1235, 0xAB);
+            expected = 0xABCD;
+            break;
+
+        default:
+            cout << "Jump doesn't handle : " << hex << (int)instruction << endl;
+            return false;
+    }
+
+    mem.write(0x0200, instruction);
+    
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpuRegister, expected, instructionName, "")) valid = false;
     if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;

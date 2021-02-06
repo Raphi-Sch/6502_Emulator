@@ -11,6 +11,9 @@ void run_all_test(CPU& cpu, Memory& mem);
 bool increment_register(CPU& cpu, Memory& mem, byte instruction);
 bool decrement_register(CPU& cpu, Memory& mem, byte instruction);
 
+// Jump
+bool jump(CPU& cpu, Memory& mem, byte instruction);
+
 // Load register test
 bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction);
 bool load_register_zero_page(CPU& cpu, Memory& mem, byte instruction);
