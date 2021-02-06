@@ -103,6 +103,10 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // INY
         case INS_INY: registerY++; break;
 
+        // JMP
+        case INS_JMP_ABS: ProgramCounter = fetch_word(mem); break;
+        case INS_JMP_IND: ProgramCounter = mem.read(fetch_byte(mem)) | (mem.read(fetch_byte(mem)) << 8); break;
+
         // JSR
         case INS_JSR: {
             stack_push(mem, ProgramCounter & 0x00FF);
