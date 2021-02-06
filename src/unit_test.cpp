@@ -6,10 +6,7 @@ void run_all_test(CPU& cpu, Memory& mem){
     int nb_test = 0;
     int test_passed = 0;
 
-    // Setting reset vector
-    mem.clear();
-    mem.write(0xfffc, 0x00);
-    mem.write(0xfffd, 0x02);
+    reset(mem);
 
     // LDA
     nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) test_passed++;
@@ -21,15 +18,6 @@ void run_all_test(CPU& cpu, Memory& mem){
     nb_test++; if(LDA_INDX(cpu, mem)) test_passed++;
     nb_test++; if(LDA_INDY(cpu, mem)) test_passed++;
 
-    // STA
-    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STA_ZP)) test_passed++;
-    nb_test++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STA_ZPX)) test_passed++;
-    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STA_ABS)) test_passed++;
-    nb_test++; if(STA_ABSX(cpu, mem)) test_passed++;
-    nb_test++; if(STA_ABSY(cpu, mem)) test_passed++;
-    nb_test++; if(STA_INDX(cpu, mem)) test_passed++;
-    nb_test++; if(STA_INDY(cpu, mem)) test_passed++;
-
     // LDX
     nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDX_IM)) test_passed++;
     nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDX_ZP)) test_passed++;
@@ -37,22 +25,11 @@ void run_all_test(CPU& cpu, Memory& mem){
     nb_test++; if(load_register_absolute(cpu, mem, CPU::INS_LDX_ABS)) test_passed++;
     nb_test++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDX_ABSY)) test_passed++;
 
-    // STX
-    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STX_ZP)) test_passed++;
-    nb_test++; if(store_register_zero_page_Y(cpu, mem, CPU::INS_STX_ZPY)) test_passed++;
-    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STX_ABS)) test_passed++;
-  
     // LDY
     nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDY_IM)) test_passed++;
     nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDY_ZP)) test_passed++;
     nb_test++; if(load_register_absolute(cpu, mem, CPU::INS_LDY_ABS)) test_passed++;
     nb_test++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDY_ABSX)) test_passed++;
-
-    // STY
-    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STY_ZP)) test_passed++;
-    nb_test++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STY_ZPX)) test_passed++;
-    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STY_ABS)) test_passed++;
-
 
     // NOP
     nb_test++; if(NOP(cpu, mem)) test_passed++;
@@ -63,11 +40,36 @@ void run_all_test(CPU& cpu, Memory& mem){
     nb_test++; if(PHP(cpu, mem)) test_passed++;
     nb_test++; if(PLP(cpu, mem)) test_passed++;
 
+    // STA
+    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STA_ZP)) test_passed++;
+    nb_test++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STA_ZPX)) test_passed++;
+    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STA_ABS)) test_passed++;
+    nb_test++; if(STA_ABSX(cpu, mem)) test_passed++;
+    nb_test++; if(STA_ABSY(cpu, mem)) test_passed++;
+    nb_test++; if(STA_INDX(cpu, mem)) test_passed++;
+    nb_test++; if(STA_INDY(cpu, mem)) test_passed++;
 
-    
+    // STX
+    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STX_ZP)) test_passed++;
+    nb_test++; if(store_register_zero_page_Y(cpu, mem, CPU::INS_STX_ZPY)) test_passed++;
+    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STX_ABS)) test_passed++;
+  
+    // STY
+    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STY_ZP)) test_passed++;
+    nb_test++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STY_ZPX)) test_passed++;
+    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STY_ABS)) test_passed++;
+
+    // Result
     cout << dec << test_passed << " of " << nb_test << " test passed successfully" << endl;
 }
 
+
+// Reset
+void reset(Memory& mem){
+    mem.clear();
+    mem.write(0xfffc, 0x00);
+    mem.write(0xfffd, 0x02);
+}
 
 // Load register test
 bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction){

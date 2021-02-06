@@ -4,8 +4,8 @@
 
 using namespace std;
 
+void reset(Memory& mem);
 void run_all_test(CPU& cpu, Memory& mem);
-
 
 // Load register test
 bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction);
