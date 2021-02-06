@@ -308,12 +308,12 @@ class CPU{
         void relative_displacement(const Memory& mem);
 
         // Stack
-        void CPU::stack_push(Memory& mem, byte data);
-        byte CPU::stack_pull(Memory& mem);
+        void stack_push(Memory& mem, byte data);
+        byte stack_pull(Memory& mem);
 
         // Flags
-        inline byte CPU::flags_save();
-        void CPU::flags_restore(byte flags);
+        inline byte flags_save();
+        void flags_restore(byte flags);
 
         // Load register
         void load_register(const Memory& mem, byte& cpuRegister, word addr);

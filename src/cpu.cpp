@@ -203,7 +203,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_TAY: {
             registerY = Accumulator;
             set_zero_and_negative_flag(registerY);
-        }
+        } break;
 
         // TSX
         case INS_TSX: {
@@ -224,7 +224,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_TYA: {
             Accumulator = registerY;
             set_zero_and_negative_flag(Accumulator);
-        }
+        } break;
 
         default:{
             cout << "CPU : Operation code " << hex << int(OpCode) << " not handle" << endl;
@@ -304,7 +304,7 @@ void CPU::stack_push(Memory& mem, byte data){
 
 byte CPU::stack_pull(Memory& mem){
     StackPointer++;
-    return mem.read(StackPointer);
+    return mem.read(0x0100 + StackPointer);
 }
 
 // Flags
