@@ -8,6 +8,12 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     reset(mem);
 
+    // Increment-Decrement register
+    nb_test++; if(increment_register(cpu, mem, CPU::INS_INX)) test_passed++;
+    nb_test++; if(increment_register(cpu, mem, CPU::INS_INY)) test_passed++;
+    nb_test++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
+    nb_test++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
+
     // LDA
     nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) test_passed++;
     nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDA_ZP)) test_passed++;
@@ -69,6 +75,83 @@ void reset(Memory& mem){
     mem.clear();
     mem.write(0xfffc, 0x00);
     mem.write(0xfffd, 0x02);
+}
+
+// Increment
+bool increment_register(CPU& cpu, Memory& mem, byte instruction){
+    bool valid = true;
+    string registerName;
+    string instructionName;
+    byte* cpuRegister;
+
+    switch(instruction){
+        case CPU::INS_INX:
+            registerName = "registerX";
+            instructionName = "INS_INX";
+            cpu.registerX = 0x10;
+            cpuRegister = &cpu.registerX;
+            break;
+
+        case CPU::INS_INY:
+            registerName = "registerY";
+            instructionName = "INS_INY";
+            cpu.registerY = 0x10;
+            cpuRegister = &cpu.registerY;
+            break;
+
+        default:
+            cout << "load_register_immediate doesn't handle : " << hex << (int)instruction << endl;
+            return false;
+    }
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU CpuCopy = cpu;
+    mem.write(0x0200, instruction);
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpuRegister, 0x11, instructionName, registerName)) valid = false;
+    if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+
+    return valid;
+}
+
+bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
+    bool valid = true;
+    string registerName;
+    string instructionName;
+    byte* cpuRegister;
+
+    switch(instruction){
+        case CPU::INS_INX:
+            registerName = "registerX";
+            instructionName = "INS_DEX";
+            cpu.registerX = 0x10;
+            cpuRegister = &cpu.registerX;
+            break;
+
+        case CPU::INS_INY:
+            registerName = "registerY";
+            instructionName = "INS_DEY";
+            cpu.registerY = 0x10;
+            cpuRegister = &cpu.registerY;
+            break;
+
+        default:
+            cout << "load_register_immediate doesn't handle : " << hex << (int)instruction << endl;
+            return false;
+    }
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU CpuCopy = cpu;
+    mem.write(0x0200, instruction);
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpuRegister, 0x09, instructionName, registerName)) valid = false;
+    if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+
+    return valid;
 }
 
 // Load register test
@@ -761,7 +844,7 @@ bool PHA(CPU& cpu, Memory& mem){
     mem.write(0x0200, CPU::INS_PHA);
     cpu.step_run(mem);
 
-    if(!expected_eq(cpu.Accumulator, mem.read(0x00FA), "INS_PHA", "Data store in mem[StackPointer] and Accumulator")) valid = false;
+    if(!expected_eq(cpu.Accumulator, mem.read(0x01FA), "INS_PHA", "Data store in mem[StackPointer] and Accumulator")) valid = false;
 
     if(!expected_eq(cpu.Accumulator, cpuCopy.Accumulator, "INS_PHA", "Accumulator")) valid = false;
     if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PHA", "registerX")) valid = false;
@@ -778,14 +861,14 @@ bool PLA(CPU& cpu, Memory& mem){
 
     cpu.reset(mem);
     cpu.StackPointer = 0xFB;
-    mem.write(0xFB, 0xFD);
+    mem.write(0x01FC, 0xFD);
 
     CPU cpuCopy = cpu;
 
     mem.write(0x0200, CPU::INS_PLA);
     cpu.step_run(mem);
 
-    if(!expected_eq(cpu.Accumulator, mem.read(0x00FB), "INS_PLA", "Data store in mem[StackPointer] and Accumulator")) valid = false;
+    if(!expected_eq(cpu.Accumulator, mem.read(0x01FC), "INS_PLA", "Data store in mem[StackPointer] and Accumulator")) valid = false;
     if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PLA", "registerX")) valid = false;
     if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PLA", "registerY")) valid = false;
     if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PLA", "ProgramCounter")) valid = false;
@@ -813,7 +896,7 @@ bool PHP(CPU& cpu, Memory& mem){
     mem.write(0x0200, CPU::INS_PHP);
     cpu.step_run(mem);
 
-    if(!expected_eq(mem.read(0x00FC), 0xDF,  "INS_PHP", "Data store in mem[StackPointer] and flags")) valid = false;
+    if(!expected_eq(mem.read(0x01FC), 0xDF,  "INS_PHP", "Data store in mem[StackPointer] and flags")) valid = false;
     if(!expected_eq(cpu.registerX, cpuCopy.registerX, "INS_PHP", "registerX")) valid = false;
     if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PHP", "registerY")) valid = false;
     if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PHP", "ProgramCounter")) valid = false;
@@ -828,7 +911,7 @@ bool PLP(CPU& cpu, Memory& mem){
 
     cpu.reset(mem);
     cpu.StackPointer = 0xFD;
-    mem.write(0x00FD, 0xDF);
+    mem.write(0x01FE, 0xDF);
 
     CPU cpuCopy = cpu;
 
