@@ -92,6 +92,22 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // CLV
         case INS_CLV: OverflowFlag = 0; break;
 
+        // CMP
+        case INS_CMP_IM: {
+            byte data = fetch_byte(mem);
+            CarryFlag = Accumulator >= data;
+            ZeroFlag = Accumulator == data;
+            NegativeFlag = (Accumulator - data) < 0;
+        } break;
+
+        case INS_CMP_ZP: compare(mem, addressing_mode_zero_page(mem)); break;
+        case INS_CMP_ZPX: compare(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_CMP_ABS: compare(mem, addressing_mode_absolute(mem)); break;
+        case INS_CMP_ABSX: compare(mem, addressing_mode_absolute_X(mem)); break;
+        case INS_CMP_ABSY: compare(mem, addressing_mode_absolute_Y(mem)); break;
+        case INS_CMP_INDX: compare(mem, addressing_mode_indexed_indirect(mem)); break;
+        case INS_CMP_INDY: compare(mem, addressing_mode_indirect_indexed(mem)); break;
+
         // DEX
         case INS_DEX: registerX--; break;
 
@@ -299,6 +315,13 @@ void CPU::bit_test(Memory& mem, word addr){
     ZeroFlag = !tmp;
     OverflowFlag = (tmp >> 6) & 0x1;
     NegativeFlag = (tmp >> 7) & 0x1;
+}
+
+void CPU::compare(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    CarryFlag = Accumulator >= data;
+    ZeroFlag = Accumulator == data;
+    NegativeFlag = (Accumulator - data) < 0;
 }
 
 void CPU::relative_displacement(const Memory& mem){

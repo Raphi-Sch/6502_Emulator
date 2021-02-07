@@ -308,6 +308,7 @@ class CPU{
         void logical_AND(Memory& mem, word addr);
         void arithmetic_shift_left(Memory& mem, word addr);
         void bit_test(Memory& mem, word addr);
+        void compare(Memory& mem, word addr);
 
         void relative_displacement(const Memory& mem);
 

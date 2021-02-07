@@ -10,6 +10,7 @@
 #include "unit_test/UT_ASL.cpp"
 #include "unit_test/UT_Branch.cpp"
 #include "unit_test/UT_BIT.cpp"
+#include "unit_test/UT_CMP.cpp"
 
 using namespace std;
 
@@ -78,6 +79,11 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     // BIT
     result = run_BIT(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
+    // CMP
+    result = run_CMP(cpu, mem);
     test_nb += result[0];
     test_passed += result[1];
 
