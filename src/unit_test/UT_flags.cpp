@@ -78,12 +78,116 @@ bool SEI(CPU& cpu, Memory& mem){
     return valid;
 }
 
+bool CLC(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_CLC);
+
+    cpu.step_run(mem);
+
+    // Set to true
+    if(!expected_eq(cpu.CarryFlag, 0, "INS_CLC", "CarryFlag")) valid = false;
+
+    // Not Affected
+    if(!expected_eq(cpu.ZeroFlag, cpuCopy.ZeroFlag, "INS_CLC", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.InterruptDisable, cpuCopy.InterruptDisable, "INS_CLC", "InterruptDisable")) valid = false;
+    if(!expected_eq(cpu.DecimalMode, cpuCopy.DecimalMode, "INS_CLC", "DecimalMode")) valid = false;
+    if(!expected_eq(cpu.BreakCommand, cpuCopy.BreakCommand, "INS_CLC", "BreakCommand")) valid = false;
+    if(!expected_eq(cpu.OverflowFlag, cpuCopy.OverflowFlag, "INS_CLC", "OverflowFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, cpuCopy.NegativeFlag, "INS_CLC", "NegativeFlag")) valid = false;
+
+    return valid;
+}
+
+bool CLD(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_CLD);
+
+    cpu.step_run(mem);
+
+    // Set to true
+    if(!expected_eq(cpu.DecimalMode, 0, "INS_CLD", "DecimalMode")) valid = false;
+
+    // Not Affected
+    if(!expected_eq(cpu.CarryFlag, cpuCopy.CarryFlag, "INS_CLD", "CarryFlag")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, cpuCopy.ZeroFlag, "INS_CLD", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.InterruptDisable, cpuCopy.InterruptDisable, "INS_CLD", "InterruptDisable")) valid = false;
+    if(!expected_eq(cpu.BreakCommand, cpuCopy.BreakCommand, "INS_CLD", "BreakCommand")) valid = false;
+    if(!expected_eq(cpu.OverflowFlag, cpuCopy.OverflowFlag, "INS_CLD", "OverflowFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, cpuCopy.NegativeFlag, "INS_CLD", "NegativeFlag")) valid = false;
+
+    return valid;
+}
+
+bool CLI(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_CLI);
+
+    cpu.step_run(mem);
+
+    // Set to true
+    if(!expected_eq(cpu.InterruptDisable, 0, "INS_CLI", "InterruptDisable")) valid = false;
+
+    // Not Affected
+    if(!expected_eq(cpu.CarryFlag, cpuCopy.CarryFlag, "INS_CLI", "CarryFlag")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, cpuCopy.ZeroFlag, "INS_CLI", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.DecimalMode, cpuCopy.DecimalMode, "INS_CLI", "DecimalMode")) valid = false;
+    if(!expected_eq(cpu.BreakCommand, cpuCopy.BreakCommand, "INS_CLI", "BreakCommand")) valid = false;
+    if(!expected_eq(cpu.OverflowFlag, cpuCopy.OverflowFlag, "INS_CLI", "OverflowFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, cpuCopy.NegativeFlag, "INS_CLI", "NegativeFlag")) valid = false;
+
+    return valid;
+}
+
+bool CLV(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    CPU cpuCopy = cpu;
+
+    mem.write(0x0200, CPU::INS_CLV);
+
+    cpu.step_run(mem);
+
+    // Set to true
+    if(!expected_eq(cpu.OverflowFlag, 0, "INS_CLV", "OverflowFlag")) valid = false;
+
+    // Not Affected
+    if(!expected_eq(cpu.CarryFlag, cpuCopy.CarryFlag, "INS_CLV", "CarryFlag")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, cpuCopy.ZeroFlag, "INS_CLV", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.InterruptDisable, cpuCopy.InterruptDisable, "INS_CLC", "InterruptDisable")) valid = false;
+    if(!expected_eq(cpu.DecimalMode, cpuCopy.DecimalMode, "INS_CLV", "DecimalMode")) valid = false;
+    if(!expected_eq(cpu.BreakCommand, cpuCopy.BreakCommand, "INS_CLV", "BreakCommand")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, cpuCopy.NegativeFlag, "INS_CLV", "NegativeFlag")) valid = false;
+
+    return valid;
+}
+
 int * run_flags(CPU& cpu, Memory& mem){
     static int result[2];
 
     result[0]++; if(SEC(cpu, mem)) result[1]++;
     result[0]++; if(SED(cpu, mem)) result[1]++;
     result[0]++; if(SEI(cpu, mem)) result[1]++;
+    result[0]++; if(CLC(cpu, mem)) result[1]++;
+    result[0]++; if(CLD(cpu, mem)) result[1]++;
+    result[0]++; if(CLI(cpu, mem)) result[1]++;
+    result[0]++; if(CLV(cpu, mem)) result[1]++;
 
     return result;
 }
