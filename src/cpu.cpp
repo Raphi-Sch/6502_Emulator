@@ -283,7 +283,8 @@ void CPU::add_with_carry(Memory& mem, word addr){
     byte data = mem.read(addr);
     word tmp = Accumulator + data + CarryFlag;
     CarryFlag = tmp > 0xFF;
-    mem.write(addr, tmp);
+    Accumulator = tmp & 0xFF;
+    set_zero_and_negative_flag(Accumulator);
 }
 
 void CPU::bit_test(Memory& mem, word addr){
