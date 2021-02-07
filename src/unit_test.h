@@ -11,13 +11,6 @@ using namespace std;
 void reset(Memory& mem);
 void run_all_test(CPU& cpu, Memory& mem);
 
-// Jump
-bool jump(CPU& cpu, Memory& mem, byte instruction);
-
-// Sub routine
-bool jsr(CPU& cpu, Memory& mem);
-bool rts(CPU& cpu, Memory& mem);
-
 // NOP
 bool NOP(CPU& cpu, Memory& mem);
 

@@ -2,6 +2,7 @@
 #include "unit_test/UT_register_load.cpp"
 #include "unit_test/UT_register_manipulation.cpp"
 #include "unit_test/UT_register_store.cpp"
+#include "unit_test/UT_routine.cpp"
 #include "unit_test/UT_stack.cpp"
 
 using namespace std;
@@ -9,39 +10,37 @@ using namespace std;
 void run_all_test(CPU& cpu, Memory& mem){
     int test_nb = 0;
     int test_passed = 0;
+    int * result;
 
     reset(mem);
 
-    // JMP
-    test_nb++; if(jump(cpu, mem, CPU::INS_JMP_ABS)) test_passed++;
-    test_nb++; if(jump(cpu, mem, CPU::INS_JMP_IND)) test_passed++;
-
-    // Sub Routine
-    test_nb++; if(jsr(cpu, mem)) test_passed++;
-    test_nb++; if(rts(cpu, mem)) test_passed++;
-    
     // NOP
     test_nb++; if(NOP(cpu, mem)) test_passed++;
 
+    // Routine
+    result = run_routine(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
     // Store register
-    int * result_register_load = run_register_load(cpu, mem);
-    test_nb += result_register_load[0];
-    test_passed += result_register_load[1];
+    result = run_register_load(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
 
     // Stack Instructions
-    int * result_stack = run_stack(cpu, mem);
-    test_nb += result_stack[0];
-    test_passed += result_stack[1];
+    result = run_stack(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
 
     // Store register
-    int * result_register_store = run_register_store(cpu, mem);
-    test_nb += result_register_store[0];
-    test_passed += result_register_store[1];
+    result = run_register_store(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
     
     // Increment-Decrement register
-    int * result_register_manipulation = run_register_manipulation(cpu, mem);
-    test_nb += result_register_manipulation[0];
-    test_passed += result_register_manipulation[1];
+    result = run_register_manipulation(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
 
     // Result
     cout << dec << test_passed << " of " << test_nb << " test passed successfully." << endl;
@@ -53,100 +52,6 @@ void reset(Memory& mem){
     mem.clear();
     mem.write(0xfffc, 0x00);
     mem.write(0xfffd, 0x02);
-}
-
-
-
-// Jump
-bool jump(CPU& cpu, Memory& mem, byte instruction){
-    bool valid = true;
-    string instructionName;
-    byte* cpuRegister;
-    word expected;
-
-    // Reseting cpu
-    cpu.reset(mem);
-    CPU CpuCopy = cpu;
-
-    switch(instruction){
-        case CPU::INS_JMP_ABS:
-            instructionName = "INS_JMP_ABS";
-            mem.write(0x0201, 0xCD);
-            mem.write(0x0202, 0XAB);
-            expected = 0xABCD;
-            break;
-
-        case CPU::INS_JMP_IND:
-            instructionName = "INS_JMP_IND";
-            mem.write(0x0201, 0x34);
-            mem.write(0x0202, 0x12);
-            mem.write(0x0203, 0x35);
-            mem.write(0x0204, 0x12);
-            mem.write(0x1234, 0xCD);
-            mem.write(0x1235, 0xAB);
-            expected = 0xABCD;
-            break;
-
-        default:
-            cout << "Jump doesn't handle : " << hex << (int)instruction << endl;
-            return false;
-    }
-
-    mem.write(0x0200, instruction);
-    
-    cpu.step_run(mem);
-
-    if(!expected_eq(cpuRegister, expected, instructionName, "")) valid = false;
-    if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
-
-    return valid;
-}
-
-// Jump to SubRoutine
-bool jsr(CPU& cpu, Memory& mem){
-    bool valid = true;
-
-    // Reseting cpu
-    cpu.reset(mem);
-    CPU CpuCopy = cpu;
-
-    // Return ADDR is PC - 1
-    mem.write(0x0200, CPU::INS_JSR);
-    mem.write(0x0201, 0x56);
-    mem.write(0x0202, 0x34);
-    
-    cpu.step_run(mem);
-
-    if(!expected_eq(cpu.ProgramCounter, 0x3456, "INS_JSR", "Jump ADDR")) valid = false;
-    if(!expected_eq((word)(mem.read(0x01FF) + (mem.read(0x01FE) << 8)), (word)0x0202 , "INS_JSR", "Return ADDR")) valid = false;
-    if(!no_flags_affected(cpu, CpuCopy, "INS_JSR")) valid = false;
-
-    return valid;
-}
-
-// Return from interrupt
-bool rts(CPU& cpu, Memory& mem){
-    bool valid = true;
-
-    // Reseting cpu
-    cpu.reset(mem);
-    cpu.StackPointer = 0xFD;
-
-    CPU CpuCopy = cpu;
-
-    // Return ADDR is 0x5677 (jsr push PC - 1)
-    mem.write(0x01FF, 0x56);
-    mem.write(0x01FE, 0x77);
-
-    mem.write(0x0200, CPU::INS_RTS);
-    
-    cpu.step_run(mem);
-
-    if(!expected_eq(cpu.ProgramCounter, 0x5678, "INS_RTS", "Return from sub ADDR")) valid = false;
-    if(!expected_eq(cpu.StackPointer, 0xFF, "INS_RTS", "StackPointer value")) valid = false;
-    if(!no_flags_affected(cpu, CpuCopy, "INS_RTS")) valid = false;
-
-    return valid;
 }
 
 // No Operation
