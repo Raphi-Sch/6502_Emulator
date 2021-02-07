@@ -14,8 +14,9 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction);
 // Jump
 bool jump(CPU& cpu, Memory& mem, byte instruction);
 
-// Jsr
+// Sub routine
 bool jsr(CPU& cpu, Memory& mem);
+bool rts(CPU& cpu, Memory& mem);
 
 // Load register test
 bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction);

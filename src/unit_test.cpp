@@ -18,8 +18,9 @@ void run_all_test(CPU& cpu, Memory& mem){
     nb_test++; if(jump(cpu, mem, CPU::INS_JMP_ABS)) test_passed++;
     nb_test++; if(jump(cpu, mem, CPU::INS_JMP_IND)) test_passed++;
 
-    // JSR
+    // Sub Routine
     nb_test++; if(jsr(cpu, mem)) test_passed++;
+    nb_test++; if(rts(cpu, mem)) test_passed++;
     
     // LDA
     nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) test_passed++;
@@ -214,6 +215,7 @@ bool jsr(CPU& cpu, Memory& mem){
     cpu.reset(mem);
     CPU CpuCopy = cpu;
 
+    // Return ADDR is PC - 1
     mem.write(0x0200, CPU::INS_JSR);
     mem.write(0x0201, 0x56);
     mem.write(0x0202, 0x34);
@@ -221,8 +223,33 @@ bool jsr(CPU& cpu, Memory& mem){
     cpu.step_run(mem);
 
     if(!expected_eq(cpu.ProgramCounter, 0x3456, "INS_JSR", "Jump ADDR")) valid = false;
-    if(!expected_eq((word)(mem.read(0x01FF) + (mem.read(0x01FE) << 8)), (word)0x0203 , "INS_JSR", "Return ADDR")) valid = false;
+    if(!expected_eq((word)(mem.read(0x01FF) + (mem.read(0x01FE) << 8)), (word)0x0202 , "INS_JSR", "Return ADDR")) valid = false;
     if(!no_flags_affected(cpu, CpuCopy, "INS_JSR")) valid = false;
+
+    return valid;
+}
+
+// Return from interrupt
+bool rts(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    cpu.StackPointer = 0xFD;
+
+    CPU CpuCopy = cpu;
+
+    // Return ADDR is 0x5677 (jsr push PC - 1)
+    mem.write(0x01FF, 0x56);
+    mem.write(0x01FE, 0x77);
+
+    mem.write(0x0200, CPU::INS_RTS);
+    
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.ProgramCounter, 0x5678, "INS_RTS", "Return from sub ADDR")) valid = false;
+    if(!expected_eq(cpu.StackPointer, 0xFF, "INS_RTS", "StackPointer value")) valid = false;
+    if(!no_flags_affected(cpu, CpuCopy, "INS_RTS")) valid = false;
 
     return valid;
 }
