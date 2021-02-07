@@ -411,6 +411,7 @@ int * run_register_load(CPU& cpu, Memory& mem){
     // LDY
     result[0]++; if(load_register_immediate(cpu, mem, CPU::INS_LDY_IM)) result[1]++;
     result[0]++; if(load_register_zero_page(cpu, mem, CPU::INS_LDY_ZP)) result[1]++;
+    result[0]++; if(load_register_zero_page_X(cpu, mem, CPU::INS_LDY_ZPX)) result[1]++;
     result[0]++; if(load_register_absolute(cpu, mem, CPU::INS_LDY_ABS)) result[1]++;
     result[0]++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDY_ABSX)) result[1]++;
 
