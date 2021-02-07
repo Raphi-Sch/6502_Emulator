@@ -11,42 +11,47 @@ bool branch(CPU& cpu, Memory& mem, byte instruction){
     reset_and_prepare_memory(mem);
     cpu.reset(mem);
     mem.write(0x200, instruction);
+    mem.write(0x201, 0x05);
 
     switch(instruction){
         case CPU::INS_BCC:
             instructionName = "INS_BCC";
             cpu.CarryFlag = 0;
-            mem.write(0x201, 0x05);
             break;
 
         case CPU::INS_BCS:
             instructionName = "INS_BCS";
             cpu.CarryFlag = 1;
-            mem.write(0x201, 0x05);
             break;
 
         case CPU::INS_BEQ:
             instructionName = "INS_BEQ";
             cpu.ZeroFlag = 1;
-            mem.write(0x201, 0x05);
             break;
 
         case CPU::INS_BMI:
             instructionName = "INS_BMI";
             cpu.NegativeFlag = 1;
-            mem.write(0x201, 0x05);
             break;
 
         case CPU::INS_BNE:
             instructionName = "INS_BNE";
             cpu.ZeroFlag = 0;
-            mem.write(0x201, 0x05);
             break;
 
         case CPU::INS_BPL:
             instructionName = "INS_BPL";
             cpu.NegativeFlag = 0;
-            mem.write(0x201, 0x05);
+            break;
+
+        case CPU::INS_BVC:
+            instructionName = "INS_BVC";
+            cpu.OverflowFlag = 0;
+            break;
+
+        case CPU::INS_BVS:
+            instructionName = "INS_BVS";
+            cpu.OverflowFlag = 1;
             break;
 
         default:
@@ -75,6 +80,8 @@ int * run_branch(CPU& cpu, Memory& mem){
     result[0]++; if(branch(cpu, mem, CPU::INS_BMI)) result[1]++;
     result[0]++; if(branch(cpu, mem, CPU::INS_BNE)) result[1]++;
     result[0]++; if(branch(cpu, mem, CPU::INS_BPL)) result[1]++;
+    result[0]++; if(branch(cpu, mem, CPU::INS_BVC)) result[1]++;
+    result[0]++; if(branch(cpu, mem, CPU::INS_BVS)) result[1]++;
 
     return result;
 }

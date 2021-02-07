@@ -142,11 +142,12 @@ bool transfer_registerX(CPU& cpu, Memory& mem, byte instruction){
             registerName = "StackPointer";
             instructionName = "INS_TXS";
             cpu.registerX = 0x5B;
+            cpu.ZeroFlag = 0;
             cpuRegister = &cpu.StackPointer;
             break;
 
         default:
-            cout << "transfer_accumulator doesn't handle : " << hex << (int)instruction << endl;
+            cout << "transfer_registerX doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
 

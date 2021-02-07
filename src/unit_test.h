@@ -13,6 +13,7 @@ void run_all_test(CPU& cpu, Memory& mem);
 
 // NOP
 bool NOP(CPU& cpu, Memory& mem);
+bool BRK(CPU& cpu, Memory& mem);
 
 // Expected
 bool expected_eq(bool value, bool expected, string instruction, string thing);

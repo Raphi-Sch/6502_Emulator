@@ -67,7 +67,8 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         // BRK
         case INS_BRK: {
-            stack_push(mem, ProgramCounter);
+            stack_push(mem, ProgramCounter & 0xFF);
+            stack_push(mem, (ProgramCounter >> 8) & 0xFF);
             stack_push(mem, flags_save());
             ProgramCounter = fetch_word(mem);
             BreakCommand = 1;
@@ -249,12 +250,12 @@ void CPU::reset(Memory& mem){
 
     // Flags
     CarryFlag = 0;
-    ZeroFlag = 0;;
-    InterruptDisable = 0;;
-    DecimalMode = 0;;
-    BreakCommand = 0;;
-    OverflowFlag = 0;;
-    NegativeFlag = 0;;
+    ZeroFlag = 1;
+    InterruptDisable = 0;
+    DecimalMode = 0;
+    BreakCommand = 0;
+    OverflowFlag = 0;
+    NegativeFlag = 0;
 }
 
 byte CPU::fetch_byte(const Memory& mem){
@@ -277,6 +278,7 @@ void CPU::arithmetic_shift_left(Memory& mem, word addr){
     data = data << 1;
     mem.write(addr, data);
     NegativeFlag = data & 0x80;
+    set_zero_and_negative_flag(Accumulator);
 }
 
 void CPU::add_with_carry(Memory& mem, word addr){

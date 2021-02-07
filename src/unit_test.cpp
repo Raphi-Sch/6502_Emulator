@@ -23,6 +23,9 @@ void run_all_test(CPU& cpu, Memory& mem){
     // NOP
     test_nb++; if(NOP(cpu, mem)) test_passed++;
 
+    // BRK
+    test_nb++; if(BRK(cpu, mem)) test_passed++;
+
     // Routine
     result = run_routine(cpu, mem);
     test_nb += result[0];
@@ -105,6 +108,35 @@ bool NOP(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_NOP", "ProgramCounter")) valid = false;
     if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer, "INS_NOP", "StackPointer")) valid = false;
     if(!no_flags_affected(cpu, cpuCopy, "INS_NOP")) valid = false;
+
+    return valid;
+}
+
+bool BRK(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
+    mem.write(0x200, CPU::INS_BRK);
+    mem.write(0xFFFE, 0x89);
+    mem.write(0xFFFF, 0x67);
+
+    CPU cpuCopy = cpu;
+    cpu.step_run(mem);
+
+
+    if(!expected_eq(mem.read(0x1FF), 0x01, "INS_BRK", "LSB Program Counter store in stack")) valid = false;
+    if(!expected_eq(mem.read(0x1FE), 0x02, "INS_BRK", "MSB Program Counter in stack")) valid = false;
+    if(!expected_eq(mem.read(0x1FD), 0x02, "INS_BRK", "Flags store in stack")) valid = false;
+
+    // Not Affected
+    if(!expected_eq(cpu.CarryFlag, cpuCopy.CarryFlag, "INS_BRK", "CarryFlag")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, cpuCopy.ZeroFlag, "INS_BRK", "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.InterruptDisable, cpuCopy.InterruptDisable, "INS_BRK", "InterruptDisable")) valid = false;
+    if(!expected_eq(cpu.DecimalMode, cpuCopy.DecimalMode, "INS_BRK", "DecimalMode")) valid = false;
+    if(!expected_eq(cpu.OverflowFlag, cpuCopy.OverflowFlag, "INS_BRK", "OverflowFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, cpuCopy.NegativeFlag, "INS_BRK", "NegativeFlag")) valid = false;
 
     return valid;
 }
