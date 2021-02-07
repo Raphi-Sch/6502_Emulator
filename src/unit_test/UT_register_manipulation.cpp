@@ -79,3 +79,14 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
 
     return valid;
 }
+
+int * run_register_manipulation(CPU& cpu, Memory& mem){
+    static int result[2];
+
+    result[0]++; if(increment_register(cpu, mem, CPU::INS_INX)) result[1]++;
+    result[0]++; if(increment_register(cpu, mem, CPU::INS_INY)) result[1]++;
+    result[0]++; if(decrement_register(cpu, mem, CPU::INS_INY)) result[1]++;
+    result[0]++; if(decrement_register(cpu, mem, CPU::INS_INY)) result[1]++;
+
+    return result;
+}

@@ -273,3 +273,28 @@ bool STA_INDY(CPU& cpu, Memory& mem){
 
     return valid;
 }
+
+int * run_register_store(CPU& cpu, Memory& mem){
+    static int result[2];
+
+    // STA
+    result[0]++; if(store_register_zero_page(cpu, mem, CPU::INS_STA_ZP)) result[1]++;
+    result[0]++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STA_ZPX)) result[1]++;
+    result[0]++; if(store_register_absolute(cpu, mem, CPU::INS_STA_ABS)) result[1]++;
+    result[0]++; if(STA_ABSX(cpu, mem)) result[1]++;
+    result[0]++; if(STA_ABSY(cpu, mem)) result[1]++;
+    result[0]++; if(STA_INDX(cpu, mem)) result[1]++;
+    result[0]++; if(STA_INDY(cpu, mem)) result[1]++;
+
+    // STX
+    result[0]++; if(store_register_zero_page(cpu, mem, CPU::INS_STX_ZP)) result[1]++;
+    result[0]++; if(store_register_zero_page_Y(cpu, mem, CPU::INS_STX_ZPY)) result[1]++;
+    result[0]++; if(store_register_absolute(cpu, mem, CPU::INS_STX_ABS)) result[1]++;
+  
+    // STY
+    result[0]++; if(store_register_zero_page(cpu, mem, CPU::INS_STY_ZP)) result[1]++;
+    result[0]++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STY_ZPX)) result[1]++;
+    result[0]++; if(store_register_absolute(cpu, mem, CPU::INS_STY_ABS)) result[1]++;
+
+    return result;
+}

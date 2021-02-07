@@ -387,3 +387,32 @@ bool LDA_INDY(CPU& cpu, Memory& mem){
 
     return valid;
 }
+
+int * run_register_load(CPU& cpu, Memory& mem){
+    static int result[2];
+
+    // LDA
+    result[0]++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) result[1]++;
+    result[0]++; if(load_register_zero_page(cpu, mem, CPU::INS_LDA_ZP)) result[1]++;
+    result[0]++; if(load_register_zero_page_X(cpu, mem, CPU::INS_LDA_ZPX)) result[1]++;
+    result[0]++; if(load_register_absolute(cpu, mem, CPU::INS_LDA_ABS)) result[1]++;
+    result[0]++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDA_ABSX)) result[1]++;
+    result[0]++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDA_ABSY)) result[1]++;
+    result[0]++; if(LDA_INDX(cpu, mem)) result[1]++;
+    result[0]++; if(LDA_INDY(cpu, mem)) result[1]++;
+
+    // LDX
+    result[0]++; if(load_register_immediate(cpu, mem, CPU::INS_LDX_IM)) result[1]++;
+    result[0]++; if(load_register_zero_page(cpu, mem, CPU::INS_LDX_ZP)) result[1]++;
+    result[0]++; if(load_register_zero_page_Y(cpu, mem, CPU::INS_LDX_ZPY)) result[1]++;
+    result[0]++; if(load_register_absolute(cpu, mem, CPU::INS_LDX_ABS)) result[1]++;
+    result[0]++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDX_ABSY)) result[1]++;
+
+    // LDY
+    result[0]++; if(load_register_immediate(cpu, mem, CPU::INS_LDY_IM)) result[1]++;
+    result[0]++; if(load_register_zero_page(cpu, mem, CPU::INS_LDY_ZP)) result[1]++;
+    result[0]++; if(load_register_absolute(cpu, mem, CPU::INS_LDY_ABS)) result[1]++;
+    result[0]++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDY_ABSX)) result[1]++;
+
+    return result;
+}
