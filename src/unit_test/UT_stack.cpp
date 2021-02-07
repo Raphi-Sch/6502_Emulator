@@ -100,3 +100,12 @@ bool PLP(CPU& cpu, Memory& mem){
 
     return valid;
 }
+
+int * run_stack(CPU& cpu, Memory& mem){
+    static int result[2];
+    result[0]++; if(PHA(cpu, mem)) result[1]++;
+    result[0]++; if(PLA(cpu, mem)) result[1]++;
+    result[0]++; if(PHP(cpu, mem)) result[1]++;
+    result[0]++; if(PLP(cpu, mem)) result[1]++;
+    return result;
+}

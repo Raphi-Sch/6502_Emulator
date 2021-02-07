@@ -7,78 +7,77 @@
 using namespace std;
 
 void run_all_test(CPU& cpu, Memory& mem){
-    int nb_test = 0;
+    int test_nb = 0;
     int test_passed = 0;
 
     reset(mem);
 
     // Increment-Decrement register
-    nb_test++; if(increment_register(cpu, mem, CPU::INS_INX)) test_passed++;
-    nb_test++; if(increment_register(cpu, mem, CPU::INS_INY)) test_passed++;
-    nb_test++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
-    nb_test++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
+    test_nb++; if(increment_register(cpu, mem, CPU::INS_INX)) test_passed++;
+    test_nb++; if(increment_register(cpu, mem, CPU::INS_INY)) test_passed++;
+    test_nb++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
+    test_nb++; if(decrement_register(cpu, mem, CPU::INS_INY)) test_passed++;
 
     // JMP
-    nb_test++; if(jump(cpu, mem, CPU::INS_JMP_ABS)) test_passed++;
-    nb_test++; if(jump(cpu, mem, CPU::INS_JMP_IND)) test_passed++;
+    test_nb++; if(jump(cpu, mem, CPU::INS_JMP_ABS)) test_passed++;
+    test_nb++; if(jump(cpu, mem, CPU::INS_JMP_IND)) test_passed++;
 
     // Sub Routine
-    nb_test++; if(jsr(cpu, mem)) test_passed++;
-    nb_test++; if(rts(cpu, mem)) test_passed++;
+    test_nb++; if(jsr(cpu, mem)) test_passed++;
+    test_nb++; if(rts(cpu, mem)) test_passed++;
     
     // LDA
-    nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) test_passed++;
-    nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDA_ZP)) test_passed++;
-    nb_test++; if(load_register_zero_page_X(cpu, mem, CPU::INS_LDA_ZPX)) test_passed++;
-    nb_test++; if(load_register_absolute(cpu, mem, CPU::INS_LDA_ABS)) test_passed++;
-    nb_test++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDA_ABSX)) test_passed++;
-    nb_test++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDA_ABSY)) test_passed++;
-    nb_test++; if(LDA_INDX(cpu, mem)) test_passed++;
-    nb_test++; if(LDA_INDY(cpu, mem)) test_passed++;
+    test_nb++; if(load_register_immediate(cpu, mem, CPU::INS_LDA_IM)) test_passed++;
+    test_nb++; if(load_register_zero_page(cpu, mem, CPU::INS_LDA_ZP)) test_passed++;
+    test_nb++; if(load_register_zero_page_X(cpu, mem, CPU::INS_LDA_ZPX)) test_passed++;
+    test_nb++; if(load_register_absolute(cpu, mem, CPU::INS_LDA_ABS)) test_passed++;
+    test_nb++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDA_ABSX)) test_passed++;
+    test_nb++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDA_ABSY)) test_passed++;
+    test_nb++; if(LDA_INDX(cpu, mem)) test_passed++;
+    test_nb++; if(LDA_INDY(cpu, mem)) test_passed++;
 
     // LDX
-    nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDX_IM)) test_passed++;
-    nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDX_ZP)) test_passed++;
-    nb_test++; if(load_register_zero_page_Y(cpu, mem, CPU::INS_LDX_ZPY)) test_passed++;
-    nb_test++; if(load_register_absolute(cpu, mem, CPU::INS_LDX_ABS)) test_passed++;
-    nb_test++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDX_ABSY)) test_passed++;
+    test_nb++; if(load_register_immediate(cpu, mem, CPU::INS_LDX_IM)) test_passed++;
+    test_nb++; if(load_register_zero_page(cpu, mem, CPU::INS_LDX_ZP)) test_passed++;
+    test_nb++; if(load_register_zero_page_Y(cpu, mem, CPU::INS_LDX_ZPY)) test_passed++;
+    test_nb++; if(load_register_absolute(cpu, mem, CPU::INS_LDX_ABS)) test_passed++;
+    test_nb++; if(load_register_absolute_Y(cpu, mem, CPU::INS_LDX_ABSY)) test_passed++;
 
     // LDY
-    nb_test++; if(load_register_immediate(cpu, mem, CPU::INS_LDY_IM)) test_passed++;
-    nb_test++; if(load_register_zero_page(cpu, mem, CPU::INS_LDY_ZP)) test_passed++;
-    nb_test++; if(load_register_absolute(cpu, mem, CPU::INS_LDY_ABS)) test_passed++;
-    nb_test++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDY_ABSX)) test_passed++;
+    test_nb++; if(load_register_immediate(cpu, mem, CPU::INS_LDY_IM)) test_passed++;
+    test_nb++; if(load_register_zero_page(cpu, mem, CPU::INS_LDY_ZP)) test_passed++;
+    test_nb++; if(load_register_absolute(cpu, mem, CPU::INS_LDY_ABS)) test_passed++;
+    test_nb++; if(load_register_absolute_X(cpu, mem, CPU::INS_LDY_ABSX)) test_passed++;
 
     // NOP
-    nb_test++; if(NOP(cpu, mem)) test_passed++;
+    test_nb++; if(NOP(cpu, mem)) test_passed++;
 
-    // Stack Instruction
-    nb_test++; if(PHA(cpu, mem)) test_passed++;
-    nb_test++; if(PLA(cpu, mem)) test_passed++;
-    nb_test++; if(PHP(cpu, mem)) test_passed++;
-    nb_test++; if(PLP(cpu, mem)) test_passed++;
+    // Stack Instructions
+    int * stack_result = run_stack(cpu, mem);
+    test_nb += stack_result[0];
+    test_passed += stack_result[1];
 
     // STA
-    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STA_ZP)) test_passed++;
-    nb_test++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STA_ZPX)) test_passed++;
-    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STA_ABS)) test_passed++;
-    nb_test++; if(STA_ABSX(cpu, mem)) test_passed++;
-    nb_test++; if(STA_ABSY(cpu, mem)) test_passed++;
-    nb_test++; if(STA_INDX(cpu, mem)) test_passed++;
-    nb_test++; if(STA_INDY(cpu, mem)) test_passed++;
+    test_nb++; if(store_register_zero_page(cpu, mem, CPU::INS_STA_ZP)) test_passed++;
+    test_nb++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STA_ZPX)) test_passed++;
+    test_nb++; if(store_register_absolute(cpu, mem, CPU::INS_STA_ABS)) test_passed++;
+    test_nb++; if(STA_ABSX(cpu, mem)) test_passed++;
+    test_nb++; if(STA_ABSY(cpu, mem)) test_passed++;
+    test_nb++; if(STA_INDX(cpu, mem)) test_passed++;
+    test_nb++; if(STA_INDY(cpu, mem)) test_passed++;
 
     // STX
-    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STX_ZP)) test_passed++;
-    nb_test++; if(store_register_zero_page_Y(cpu, mem, CPU::INS_STX_ZPY)) test_passed++;
-    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STX_ABS)) test_passed++;
+    test_nb++; if(store_register_zero_page(cpu, mem, CPU::INS_STX_ZP)) test_passed++;
+    test_nb++; if(store_register_zero_page_Y(cpu, mem, CPU::INS_STX_ZPY)) test_passed++;
+    test_nb++; if(store_register_absolute(cpu, mem, CPU::INS_STX_ABS)) test_passed++;
   
     // STY
-    nb_test++; if(store_register_zero_page(cpu, mem, CPU::INS_STY_ZP)) test_passed++;
-    nb_test++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STY_ZPX)) test_passed++;
-    nb_test++; if(store_register_absolute(cpu, mem, CPU::INS_STY_ABS)) test_passed++;
+    test_nb++; if(store_register_zero_page(cpu, mem, CPU::INS_STY_ZP)) test_passed++;
+    test_nb++; if(store_register_zero_page_X(cpu, mem, CPU::INS_STY_ZPX)) test_passed++;
+    test_nb++; if(store_register_absolute(cpu, mem, CPU::INS_STY_ABS)) test_passed++;
 
     // Result
-    cout << dec << test_passed << " of " << nb_test << " test passed successfully" << endl;
+    cout << dec << test_passed << " of " << test_nb << " test passed successfully" << endl;
 }
 
 
