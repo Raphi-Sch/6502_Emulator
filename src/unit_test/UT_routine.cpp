@@ -95,16 +95,47 @@ bool rts(CPU& cpu, Memory& mem){
     return valid;
 }
 
+bool rti(CPU& cpu, Memory& mem){
+    bool valid = true;
+
+    // Memory
+    // PC in memory 0x1050;
+    mem.write(0x01FF, 0x50);
+    mem.write(0x01FE, 0x10);
+    mem.write(0x01FD, 0xFF);
+
+    // Reseting cpu
+    cpu.reset(mem);
+    cpu.StackPointer = 0xFC;
+
+    mem.write(0x0200, CPU::INS_RTI);
+    
+    cpu.step_run(mem);
+
+    if(!expected_eq(cpu.ProgramCounter, 0x5010, "INS_RTI", "Return from sub ADDR")) valid = false;
+    if(!expected_eq(cpu.CarryFlag, 1, "INS_RTI", "CarryFlag")) valid = false;
+    if(!expected_eq(cpu.InterruptDisable, 1, "INS_RTI", "InterruptDisable")) valid = false;
+    if(!expected_eq(cpu.DecimalMode, 1, "INS_RTI", "DecimalMode")) valid = false;
+    if(!expected_eq(cpu.BreakCommand, 1, "INS_RTI", "BreakCommand")) valid = false;
+    if(!expected_eq(cpu.OverflowFlag, 1, "INS_RTI", "OverflowFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, 1, "INS_RTI", "NegativeFlag")) valid = false;
+
+    return valid;
+}
+
 int * run_routine(CPU& cpu, Memory& mem){
     static int result[2];
 
-    // JMP
+    // Jump
     result[0]++; if(jump(cpu, mem, CPU::INS_JMP_ABS)) result[1]++;
     result[0]++; if(jump(cpu, mem, CPU::INS_JMP_IND)) result[1]++;
 
     // Sub Routine
     result[0]++; if(jsr(cpu, mem)) result[1]++;
     result[0]++; if(rts(cpu, mem)) result[1]++;
+
+    // Return from Interrupt
+    result[0]++; if(rti(cpu, mem)) result[1]++;
 
     return result;
 }

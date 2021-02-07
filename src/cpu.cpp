@@ -161,7 +161,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // RTI
         case INS_RTI: {
             flags_restore(stack_pull(mem));
-            ProgramCounter = stack_pull(mem);
+            ProgramCounter = stack_pull(mem) | (stack_pull(mem) << 8);
         } break;
 
         // RTS
