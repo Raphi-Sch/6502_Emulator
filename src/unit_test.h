@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void reset(Memory& mem);
+void reset_and_prepare_memory(Memory& mem);
 void run_all_test(CPU& cpu, Memory& mem);
 
 // NOP

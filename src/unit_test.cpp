@@ -6,6 +6,7 @@
 #include "unit_test/UT_stack.cpp"
 #include "unit_test/UT_flags.cpp"
 #include "unit_test/UT_ADC.cpp"
+#include "unit_test/UT_AND.cpp"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ void run_all_test(CPU& cpu, Memory& mem){
     int test_passed = 0;
     int * result;
 
-    reset(mem);
+    reset_and_prepare_memory(mem);
 
     // NOP
     test_nb++; if(NOP(cpu, mem)) test_passed++;
@@ -54,13 +55,18 @@ void run_all_test(CPU& cpu, Memory& mem){
     test_nb += result[0];
     test_passed += result[1];
 
+    // AND
+    result = run_AND(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
     // Result
     cout << dec << test_passed << " of " << test_nb << " test passed successfully." << endl;
 }
 
 
 // Reset
-void reset(Memory& mem){
+void reset_and_prepare_memory(Memory& mem){
     mem.clear();
     mem.write(0xfffc, 0x00);
     mem.write(0xfffd, 0x02);
