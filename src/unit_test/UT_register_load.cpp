@@ -190,7 +190,7 @@ bool load_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction){
     mem.write(0x0200, instruction);
     mem.write(0x0201, 0x01);
     mem.write(0x000A, 0xF3);
-    cpu.registerX = 0x09;
+    cpu.registerY = 0x09;
 
     cpu.step_run(mem);
 
