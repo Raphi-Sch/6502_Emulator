@@ -22,14 +22,14 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_ADC_INDY: add_with_carry(mem, addressing_mode_indirect_indexed(mem)); break;
 
         // AND
-        case INS_AND_IM: Accumulator = Accumulator & mem.read(addressing_mode_immediate()); break;
-        case INS_AND_ZP: Accumulator = Accumulator & mem.read(addressing_mode_zero_page(mem)); break;
-        case INS_AND_ZPX: Accumulator = Accumulator & mem.read(addressing_mode_zero_page_X(mem)); break;
-        case INS_AND_ABS: Accumulator = Accumulator & mem.read(addressing_mode_absolute(mem)); break;
-        case INS_AND_ABSX: Accumulator = Accumulator & mem.read(addressing_mode_absolute_X(mem)); break;
-        case INS_AND_ABSY: Accumulator = Accumulator & mem.read(addressing_mode_absolute_Y(mem)); break;
-        case INS_AND_INDX: Accumulator = Accumulator & mem.read(addressing_mode_indexed_indirect(mem)); break;
-        case INS_AND_INDY: Accumulator = Accumulator & mem.read(addressing_mode_indirect_indexed(mem)); break;
+        case INS_AND_IM: logical_AND(mem, addressing_mode_immediate()); break;
+        case INS_AND_ZP: logical_AND(mem, addressing_mode_zero_page(mem)); break;
+        case INS_AND_ZPX: logical_AND(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_AND_ABS: logical_AND(mem, addressing_mode_absolute(mem)); break;
+        case INS_AND_ABSX: logical_AND(mem, addressing_mode_absolute_X(mem)); break;
+        case INS_AND_ABSY: logical_AND(mem, addressing_mode_absolute_Y(mem)); break;
+        case INS_AND_INDX: logical_AND(mem, addressing_mode_indexed_indirect(mem)); break;
+        case INS_AND_INDY: logical_AND(mem, addressing_mode_indirect_indexed(mem)); break;
 
         // ASL
         case INS_ASL_ACC:{
@@ -284,6 +284,11 @@ void CPU::add_with_carry(Memory& mem, word addr){
     word tmp = Accumulator + data + CarryFlag;
     CarryFlag = tmp > 0xFF;
     Accumulator = tmp & 0xFF;
+    set_zero_and_negative_flag(Accumulator);
+}
+
+void CPU::logical_AND(Memory& mem, word addr){
+    Accumulator = Accumulator & mem.read(addr);
     set_zero_and_negative_flag(Accumulator);
 }
 

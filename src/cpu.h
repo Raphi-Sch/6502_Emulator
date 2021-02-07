@@ -305,6 +305,7 @@ class CPU{
 
         // Arithmetic
         void add_with_carry(Memory& mem, word addr);
+        void logical_AND(Memory& mem, word addr);
         void arithmetic_shift_left(Memory& mem, word addr);
         void bit_test(Memory& mem, word addr);
 
