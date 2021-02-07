@@ -114,6 +114,7 @@ bool rti(CPU& cpu, Memory& mem){
 
     if(!expected_eq(cpu.ProgramCounter, 0x5010, "INS_RTI", "Return from sub ADDR")) valid = false;
     if(!expected_eq(cpu.CarryFlag, 1, "INS_RTI", "CarryFlag")) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, 1, "INS_RTI", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.InterruptDisable, 1, "INS_RTI", "InterruptDisable")) valid = false;
     if(!expected_eq(cpu.DecimalMode, 1, "INS_RTI", "DecimalMode")) valid = false;
     if(!expected_eq(cpu.BreakCommand, 1, "INS_RTI", "BreakCommand")) valid = false;
