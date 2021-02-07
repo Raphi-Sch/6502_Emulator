@@ -1,7 +1,7 @@
 #include "unit_test.h"
-#include "unit_test/UT_load_register.cpp"
-#include "unit_test/UT_store_register.cpp"
+#include "unit_test/UT_register_load.cpp"
 #include "unit_test/UT_register_manipulation.cpp"
+#include "unit_test/UT_register_store.cpp"
 #include "unit_test/UT_stack.cpp"
 
 using namespace std;
