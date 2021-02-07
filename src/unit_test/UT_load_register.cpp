@@ -47,7 +47,7 @@ bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF1, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     // Reseting cpu
     cpu.reset(mem);
@@ -62,7 +62,7 @@ bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF1, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, true, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, false, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -111,7 +111,7 @@ bool load_register_zero_page(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF2, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -155,7 +155,7 @@ bool load_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF3, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -193,7 +193,7 @@ bool load_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF3, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -243,7 +243,7 @@ bool load_register_absolute(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF4, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -287,7 +287,7 @@ bool load_register_absolute_X(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF5, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -331,7 +331,7 @@ bool load_register_absolute_Y(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xF6, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, instructionName, "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
     
 
     return valid;
@@ -358,7 +358,7 @@ bool LDA_INDX(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.Accumulator, 0xF7, "INS_LDA_INDX", "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDX", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDX", "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDX")) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, "INS_LDA_INDX")) valid = false;
 
     return valid;
 }
@@ -383,7 +383,7 @@ bool LDA_INDY(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.Accumulator, 0xF8, "INS_LDA_INDY", "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, false, "INS_LDA_INDY", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, true, "INS_LDA_INDY", "NegativeFlag")) valid = false;
-    if(!load_register_not_changing_unexpected_flags(cpu, CpuCopy, "INS_LDA_INDY")) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, "INS_LDA_INDY")) valid = false;
 
     return valid;
 }
