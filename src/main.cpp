@@ -1,5 +1,10 @@
 #include <iostream>
-//#include "cpu.h"
+
+#ifndef CPU_H
+    #define CPU_H
+    #include "cpu.h"
+#endif
+
 #include "unit_test.h"
 
 using namespace std;

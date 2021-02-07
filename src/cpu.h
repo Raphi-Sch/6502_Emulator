@@ -1,5 +1,8 @@
 #include <cstdint>
-#include "memory.h"
+#ifndef MEMORY_H
+    #define MEMORY_H
+    #include "memory.h"
+#endif
 
 // Reference : http://www.obelisk.me.uk/6502/ http://www.emulator101.com/6502-addressing-modes.html
 
