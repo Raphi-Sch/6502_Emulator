@@ -54,7 +54,7 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
             break;
 
         default:
-            cout << "ADC doesn't handle : " << hex << (int)instruction << endl;
+            cout << "ASL doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
  
