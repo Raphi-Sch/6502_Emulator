@@ -8,7 +8,9 @@ bool ADC(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    reset_and_prepare_memory(mem);
     cpu.reset(mem);
+    
     cpu.Accumulator = 0xF0;
     cpu.CarryFlag = 0;
     mem.write(0x0200, instruction);

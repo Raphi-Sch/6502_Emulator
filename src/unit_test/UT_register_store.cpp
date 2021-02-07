@@ -12,6 +12,7 @@ bool store_register_zero_page(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_STA_ZP:
@@ -61,6 +62,7 @@ bool store_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_STA_ZPX:
@@ -103,6 +105,7 @@ bool store_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_STX_ZPY:
@@ -138,6 +141,7 @@ bool store_register_absolute(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_STA_ABS:
@@ -186,6 +190,8 @@ bool STA_ABSX(CPU& cpu, Memory& mem){
  
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.Accumulator = 0x1A;
     cpu.registerX = 0x01;
     
@@ -208,6 +214,8 @@ bool STA_ABSY(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.Accumulator = 0x1B;
     cpu.registerY = 0x01;
     
@@ -231,6 +239,8 @@ bool STA_INDX(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.Accumulator = 0x2A;
     cpu.registerX = 0x04;
 
@@ -254,6 +264,8 @@ bool STA_INDY(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+    
     cpu.registerY = 0x10;
     cpu.Accumulator = 0x2B;
     

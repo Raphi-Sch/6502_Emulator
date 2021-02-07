@@ -7,7 +7,10 @@
 bool PHA(CPU& cpu, Memory& mem){
     bool valid = true;
 
+    // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.Accumulator = 0xDB;
     cpu.StackPointer = 0xFA;
 
@@ -31,7 +34,10 @@ bool PHA(CPU& cpu, Memory& mem){
 bool PLA(CPU& cpu, Memory& mem){
     bool valid = true;
 
+    // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.StackPointer = 0xFB;
     mem.write(0x01FC, 0xFD);
 
@@ -53,7 +59,10 @@ bool PLA(CPU& cpu, Memory& mem){
 bool PHP(CPU& cpu, Memory& mem){
     bool valid = true;
 
+    // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.StackPointer = 0xFC;
     cpu.CarryFlag = 1;
     cpu.ZeroFlag = 1;
@@ -81,7 +90,10 @@ bool PHP(CPU& cpu, Memory& mem){
 bool PLP(CPU& cpu, Memory& mem){
     bool valid = true;
 
+    // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+    
     cpu.StackPointer = 0xFD;
     mem.write(0x01FE, 0xDF);
 

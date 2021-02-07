@@ -12,6 +12,8 @@ bool jump(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+    
     CPU CpuCopy = cpu;
 
     switch(instruction){
@@ -54,6 +56,8 @@ bool jsr(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     CPU CpuCopy = cpu;
 
     // Return ADDR is PC - 1
@@ -76,6 +80,8 @@ bool rts(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     cpu.StackPointer = 0xFD;
 
     CPU CpuCopy = cpu;
@@ -98,14 +104,16 @@ bool rts(CPU& cpu, Memory& mem){
 bool rti(CPU& cpu, Memory& mem){
     bool valid = true;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     // Memory
     // PC in memory 0x1050;
     mem.write(0x01FF, 0x50);
     mem.write(0x01FE, 0x10);
     mem.write(0x01FD, 0xFF);
 
-    // Reseting cpu
-    cpu.reset(mem);
     cpu.StackPointer = 0xFC;
 
     mem.write(0x0200, CPU::INS_RTI);

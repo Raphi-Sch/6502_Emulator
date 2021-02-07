@@ -9,6 +9,10 @@ bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     switch(instruction){
         case CPU::INS_LDA_IM:
             registerName = "Accumulator";
@@ -33,9 +37,6 @@ bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction){
             return false;
     }
 
-    // Reseting cpu
-    cpu.reset(mem);
-    
     CPU CpuCopy = cpu;
 
     // ZeroFlag shoud be false, NegativeFlag shoud be true
@@ -73,6 +74,10 @@ bool load_register_zero_page(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     switch(instruction){
         case CPU::INS_LDA_ZP:
             registerName = "Accumulator";
@@ -96,9 +101,6 @@ bool load_register_zero_page(CPU& cpu, Memory& mem, byte instruction){
             cout << "load_register_zero_page doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
-
-    // Reseting cpu
-    cpu.reset(mem);
     
     CPU CpuCopy = cpu;
 
@@ -122,6 +124,10 @@ bool load_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     switch(instruction){
         case CPU::INS_LDA_ZPX:
             registerName = "Accumulator";
@@ -139,9 +145,6 @@ bool load_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction){
             cout << "load_register_zero_page_X doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
-
-    // Reseting cpu
-    cpu.reset(mem);
     
     CPU CpuCopy = cpu;
 
@@ -166,6 +169,10 @@ bool load_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     switch(instruction){
         case CPU::INS_LDX_ZPY:
             registerName = "registerX";
@@ -178,9 +185,6 @@ bool load_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction){
             return false;
     }
 
-    // Reseting cpu
-    cpu.reset(mem);
-    
     CPU CpuCopy = cpu;
 
     mem.write(0x0200, instruction);
@@ -203,6 +207,10 @@ bool load_register_absolute(CPU& cpu, Memory& mem, byte instruction){
     string registerName;
     string instructionName;
     byte* cpuRegister;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_LDA_ABS:
@@ -228,9 +236,6 @@ bool load_register_absolute(CPU& cpu, Memory& mem, byte instruction){
             return false;
     }
 
-    // Reseting cpu
-    cpu.reset(mem);
-    
     CPU CpuCopy = cpu;
 
     mem.write(0x0200, instruction);
@@ -254,6 +259,10 @@ bool load_register_absolute_X(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     switch(instruction){
         case CPU::INS_LDA_ABSX:
             registerName = "Accumulator";
@@ -271,8 +280,6 @@ bool load_register_absolute_X(CPU& cpu, Memory& mem, byte instruction){
             cout << "load_register_absolute_X doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
-    // Reseting cpu
-    cpu.reset(mem);
     
     CPU CpuCopy = cpu;
 
@@ -298,6 +305,10 @@ bool load_register_absolute_Y(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
+
     switch(instruction){
         case CPU::INS_LDA_ABSY:
             registerName = "Accumulator";
@@ -315,8 +326,6 @@ bool load_register_absolute_Y(CPU& cpu, Memory& mem, byte instruction){
             cout << "load_register_absolute_Y doesn't handle : " << hex << (int)instruction << endl;
             return false;
     }
-    // Reseting cpu
-    cpu.reset(mem);
     
     CPU CpuCopy = cpu;
 
@@ -343,6 +352,7 @@ bool LDA_INDX(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
     
     CPU CpuCopy = cpu;
 
@@ -368,6 +378,7 @@ bool LDA_INDY(CPU& cpu, Memory& mem){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
     
     CPU CpuCopy = cpu;
 
