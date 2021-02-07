@@ -157,6 +157,21 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_LDY_ABS: load_register(mem, registerY, addressing_mode_absolute(mem)); break;
         case INS_LDY_ABSX: load_register(mem, registerY, addressing_mode_absolute_X(mem)); break;
 
+        // LSR
+        case INS_LSR_ACC: {
+            byte data = Accumulator;
+            CarryFlag = (data & 0x01);
+            data = (data >> 1);
+            Accumulator = data;
+            NegativeFlag = (data & 0x80);
+            ZeroFlag = (data == 0);
+        } break;
+
+        case INS_LSR_ZP: arithmetic_shift_right(mem, addressing_mode_zero_page(mem)); break;
+        case INS_LSR_ZPX: arithmetic_shift_right(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_LSR_ABS: arithmetic_shift_right(mem, addressing_mode_absolute(mem)); break;
+        case INS_LSR_ABSX: arithmetic_shift_right(mem, addressing_mode_absolute_X(mem)); break;
+
         // NOP
         case INS_NOP: break;
 
@@ -294,7 +309,16 @@ void CPU::arithmetic_shift_left(Memory& mem, word addr){
     data = data << 1;
     mem.write(addr, data);
     NegativeFlag = data & 0x80;
-    set_zero_and_negative_flag(Accumulator);
+    ZeroFlag = data == 0;
+}
+
+void CPU::arithmetic_shift_right(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    CarryFlag = (data & 0x01);
+    data = data >> 1;
+    mem.write(addr, data);
+    NegativeFlag = (data & 0x80);
+    ZeroFlag = (data == 0);
 }
 
 void CPU::add_with_carry(Memory& mem, word addr){
@@ -323,6 +347,7 @@ void CPU::compare(Memory& mem, word addr){
     ZeroFlag = Accumulator == data;
     NegativeFlag = (Accumulator - data) < 0;
 }
+
 
 void CPU::relative_displacement(const Memory& mem){
     byte offset = fetch_byte(mem);
