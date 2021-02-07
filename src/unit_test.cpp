@@ -9,6 +9,7 @@
 #include "unit_test/UT_AND.cpp"
 #include "unit_test/UT_ASL.cpp"
 #include "unit_test/UT_Branch.cpp"
+#include "unit_test/UT_BIT.cpp"
 
 using namespace std;
 
@@ -69,6 +70,11 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     // Branch if
     result = run_branch(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
+    // BIT
+    result = run_BIT(cpu, mem);
     test_nb += result[0];
     test_passed += result[1];
 
