@@ -4,6 +4,7 @@
 #include "unit_test/UT_register_store.cpp"
 #include "unit_test/UT_routine.cpp"
 #include "unit_test/UT_stack.cpp"
+#include "unit_test/UT_flags.cpp"
 
 using namespace std;
 
@@ -39,6 +40,11 @@ void run_all_test(CPU& cpu, Memory& mem){
     
     // Increment-Decrement register
     result = run_register_manipulation(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
+    // Flags
+    result = run_flags(cpu, mem);
     test_nb += result[0];
     test_passed += result[1];
 
