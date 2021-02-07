@@ -110,7 +110,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // JSR
         case INS_JSR: {
             word addr_jump = fetch_word(mem);
-            word PC = ProgramCounter;
+            word PC = ProgramCounter - 1;
             stack_push(mem, PC & 0x00FF);
             stack_push(mem, (PC & 0xFF00) >> 8);
             ProgramCounter = addr_jump;
@@ -165,7 +165,7 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         } break;
 
         // RTS
-        case INS_RTS: ProgramCounter = (stack_pull(mem) + (stack_pull(mem) << 8)) - 1; break;
+        case INS_RTS: ProgramCounter = (stack_pull(mem) + (stack_pull(mem) << 8) + 1); break;
 
         // SEC
         case INS_SEC: CarryFlag = 1; break;
