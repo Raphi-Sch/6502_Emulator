@@ -7,6 +7,7 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
     bool valid = true;
     string instructionName;
     byte* cpuRegister;
+    word addr;
 
     reset_and_prepare_memory(mem);
     cpu.reset(mem);
@@ -24,6 +25,7 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
             instructionName = "INS_ASL_ZP";
             mem.write(0x201, 0x23);
             mem.write(0x23, 0xFF);
+            addr = 0x23;
             break;
 
         case CPU::INS_ASL_ZPX:
@@ -31,6 +33,7 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
             mem.write(0x201, 0x23);
             cpu.registerX = 0x02;
             mem.write(0x25, 0xFF);
+            addr = 0x25;
             break;
 
         case CPU::INS_ASL_ABS:
@@ -38,6 +41,7 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
             mem.write(0x201, 0x30);
             mem.write(0x202, 0x12);
             mem.write(0x1230, 0xFF);
+            addr = 0x1230;
             break;
 
         case CPU::INS_ASL_ABSX:
@@ -46,6 +50,7 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
             mem.write(0x202, 0x12);
             cpu.registerX = 0x05;
             mem.write(0x1235, 0xFF);
+            addr = 0x1235;
             break;
 
         default:
@@ -57,10 +62,8 @@ bool ASL(CPU& cpu, Memory& mem, byte instruction){
     cpu.step_run(mem);
 
 
-    if(instruction == CPU::INS_ASL_ACC)
-        if(!expected_eq(cpu.Accumulator, 0xFE, instructionName, "Accumulator")) valid = false;
-    //else
-        //if(!expected_eq(mem.read(), 0xFE, instructionName, "Accumulator")) valid = false;
+    if(instruction == CPU::INS_ASL_ACC){ if(!expected_eq(cpu.Accumulator, 0xFE, instructionName, "Accumulator")) valid = false; }
+    else { if(!expected_eq(mem.read(addr), 0xFE, instructionName, "Accumulator")) valid = false; }
 
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 1, instructionName, "NegativeFlag")) valid = false;
