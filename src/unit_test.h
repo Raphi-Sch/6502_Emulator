@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
+
+#ifndef CPU_H
+#define CPU_H
 #include "cpu.h"
+#endif
 
 using namespace std;
 
@@ -17,19 +21,6 @@ bool jump(CPU& cpu, Memory& mem, byte instruction);
 // Sub routine
 bool jsr(CPU& cpu, Memory& mem);
 bool rts(CPU& cpu, Memory& mem);
-
-// Load register test
-bool load_register_immediate(CPU& cpu, Memory& mem, byte instruction);
-bool load_register_zero_page(CPU& cpu, Memory& mem, byte instruction);
-bool load_register_zero_page_X(CPU& cpu, Memory& mem, byte instruction);
-bool load_register_zero_page_Y(CPU& cpu, Memory& mem, byte instruction);
-bool load_register_absolute(CPU& cpu, Memory& mem, byte instruction);
-bool load_register_absolute_X(CPU& cpu, Memory& mem, byte instruction);
-bool load_register_absolute_Y(CPU& cpu, Memory& mem, byte instruction);
-
-// LDA specific
-bool LDA_INDX(CPU& cpu, Memory& mem);
-bool LDA_INDY(CPU& cpu, Memory& mem);
 
 // Store register test
 bool store_register_zero_page(CPU& cpu, Memory& mem, byte instruction);
