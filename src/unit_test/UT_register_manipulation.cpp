@@ -75,7 +75,10 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
     cpu.step_run(mem);
 
     if(!expected_eq(cpuRegister, 0x09, instructionName, registerName)) valid = false;
-    if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, 0, instructionName, "NegativeFlag")) valid = false;
+
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
