@@ -142,6 +142,14 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // DEY
         case INS_DEY: decrement_register(registerY); break;
 
+        // EOR
+        case INS_EOR_IM:{
+
+        } break;
+
+
+
+
         // INC
         case INS_INC_ZP: increment_memory(mem, addressing_mode_zero_page(mem)); break;
         case INS_INC_ZPX: increment_memory(mem, addressing_mode_zero_page_X(mem)); break;
@@ -384,6 +392,11 @@ void CPU::logical_AND(Memory& mem, word addr){
 
 void CPU::logical_OR(Memory& mem, word addr){
     Accumulator = Accumulator | mem.read(addr);
+    set_zero_and_negative_flag(Accumulator);
+}
+
+void CPU::exclusive_OR(Memory& mem, word addr){
+    Accumulator = Accumulator ^ mem.read(addr);
     set_zero_and_negative_flag(Accumulator);
 }
 
