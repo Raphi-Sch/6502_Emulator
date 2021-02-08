@@ -13,6 +13,8 @@
 #include "unit_test/UT_Compare.cpp"
 #include "unit_test/UT_LSR.cpp"
 #include "unit_test/UT_Decrement.cpp"
+#include "unit_test/UT_Increment.cpp"
+#include "unit_test/UT_ORA.cpp"
 
 using namespace std;
 
@@ -96,6 +98,16 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     // Decrement
     result = run_decrement(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
+    // Increment
+    result = run_increment(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
+    // Logical OR
+    result = run_ORA(cpu, mem);
     test_nb += result[0];
     test_passed += result[1];
 

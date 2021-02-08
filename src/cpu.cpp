@@ -137,16 +137,22 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_DEC_ABSX: decrement_memory(mem, addressing_mode_absolute_X(mem)); break;
 
         // DEX
-        case INS_DEX: registerX--; break;
+        case INS_DEX: decrement_register(registerX); break;
 
         // DEY
-        case INS_DEY: registerY--; break;
+        case INS_DEY: decrement_register(registerY); break;
+
+        // INC
+        case INS_INC_ZP: increment_memory(mem, addressing_mode_zero_page(mem)); break;
+        case INS_INC_ZPX: increment_memory(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_INC_ABS: increment_memory(mem, addressing_mode_absolute(mem)); break;
+        case INS_INC_ABSX: increment_memory(mem, addressing_mode_absolute_X(mem)); break;
 
         // INX
-        case INS_INX: registerX++; break;
+        case INS_INX: increment_register(registerX); break;
 
         // INY
-        case INS_INY: registerY++; break;
+        case INS_INY: increment_register(registerY); break;
 
         // JMP
         case INS_JMP_ABS: ProgramCounter = fetch_word(mem); break;
@@ -202,6 +208,20 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         // NOP
         case INS_NOP: break;
+
+        // ORA
+        case INS_ORA_IM:{
+            Accumulator = Accumulator | fetch_byte(mem);
+            set_zero_and_negative_flag(Accumulator);
+        } break;
+
+        case INS_ORA_ZP: logical_OR(mem, addressing_mode_zero_page(mem)); break;
+        case INS_ORA_ZPX: logical_OR(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_ORA_ABS: logical_OR(mem, addressing_mode_absolute(mem)); break;
+        case INS_ORA_ABSX: logical_OR(mem, addressing_mode_absolute_X(mem)); break;
+        case INS_ORA_ABSY: logical_OR(mem, addressing_mode_absolute_Y(mem)); break;
+        case INS_ORA_INDX: logical_OR(mem, addressing_mode_indexed_indirect(mem)); break;
+        case INS_ORA_INDY: logical_OR(mem, addressing_mode_indirect_indexed(mem)); break;
 
         // PHA
         case INS_PHA: stack_push(mem, Accumulator); break;
@@ -362,6 +382,11 @@ void CPU::logical_AND(Memory& mem, word addr){
     set_zero_and_negative_flag(Accumulator);
 }
 
+void CPU::logical_OR(Memory& mem, word addr){
+    Accumulator = Accumulator | mem.read(addr);
+    set_zero_and_negative_flag(Accumulator);
+}
+
 void CPU::bit_test(Memory& mem, word addr){
     byte tmp = Accumulator & mem.read(addr);
     ZeroFlag = !tmp;
@@ -378,12 +403,31 @@ void CPU::compare(Memory& mem, byte& cpuRegister, word addr){
 
 void CPU::decrement_memory(Memory& mem, word addr){
     byte data = mem.read(addr);
-    byte sub = 0x1;
     byte tmp;
-    tmp = data + (~sub + 1);
+    tmp = data + (~0x1 + 1);
     mem.write(addr, tmp);
     NegativeFlag = (tmp >> 7);
     ZeroFlag = (tmp == 0);
+}
+
+void CPU::decrement_register(byte& cpuRegister){
+    cpuRegister = cpuRegister + (~0x1 + 1);
+    NegativeFlag = (cpuRegister >> 7);
+    ZeroFlag = (cpuRegister == 0);
+}
+
+void CPU::increment_memory(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    data++;
+    mem.write(addr, data);
+    NegativeFlag = (data >> 7);
+    ZeroFlag = (data == 0);
+}
+
+void CPU::increment_register(byte& cpuRegister){
+    cpuRegister++;
+    NegativeFlag = (cpuRegister >> 7);
+    ZeroFlag = (cpuRegister == 0);
 }
 
 

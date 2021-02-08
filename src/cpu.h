@@ -306,11 +306,15 @@ class CPU{
         // Arithmetic
         void add_with_carry(Memory& mem, word addr);
         void logical_AND(Memory& mem, word addr);
+        void logical_OR(Memory& mem, word addr);
         void arithmetic_shift_left(Memory& mem, word addr);
         void arithmetic_shift_right(Memory& mem, word addr);
         void bit_test(Memory& mem, word addr);
         void compare(Memory& mem, byte& cpuRegister, word addr);
         void decrement_memory(Memory& mem, word addr);
+        void decrement_register(byte& cpuRegister);
+        void increment_memory(Memory& mem, word addr);
+        void increment_register(byte& cpuRegister);
         
         void relative_displacement(const Memory& mem);
 
