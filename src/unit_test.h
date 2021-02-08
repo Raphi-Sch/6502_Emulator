@@ -1,10 +1,7 @@
 #include <iostream>
 #include <string>
-
-#ifndef CPU_H
-#define CPU_H
 #include "cpu.h"
-#endif
+#include "memory.h"
 
 using namespace std;
 

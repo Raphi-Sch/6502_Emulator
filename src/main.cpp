@@ -1,10 +1,6 @@
 #include <iostream>
-
-#ifndef CPU_H
-    #define CPU_H
-    #include "cpu.h"
-#endif
-
+#include "cpu.h"
+#include "memory.h"
 #include "unit_test.h"
 
 using namespace std;

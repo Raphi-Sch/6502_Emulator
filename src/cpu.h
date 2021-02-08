@@ -1,8 +1,8 @@
+#ifndef CPU_H
+#define CPU_H
+
 #include <cstdint>
-#ifndef MEMORY_H
-    #define MEMORY_H
-    #include "memory.h"
-#endif
+#include "memory.h"
 
 // Reference : http://www.obelisk.me.uk/6502/ http://www.emulator101.com/6502-addressing-modes.html
 
@@ -336,3 +336,5 @@ class CPU{
         inline word addressing_mode_indexed_indirect(const Memory&);
         inline word addressing_mode_indirect_indexed(const Memory&);
 };
+
+#endif

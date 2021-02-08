@@ -1,3 +1,6 @@
+#ifndef MEMORY_H
+#define MEMORY_H
+
 #include <cstdint>
 #include <iostream>
 #include <iomanip>
@@ -16,3 +19,5 @@ class Memory{
         byte mem[0xffff];
         
 };
+
+#endif
