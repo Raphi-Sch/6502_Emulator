@@ -130,6 +130,11 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         case INS_CPY_ZP: compare(mem, registerY, addressing_mode_zero_page(mem)); break;
         case INS_CPY_ABS: compare(mem, registerY, addressing_mode_absolute(mem)); break;
 
+        // DEC
+        case INS_DEC_ZP: decrement_memory(mem, addressing_mode_zero_page(mem)); break;
+        case INS_DEC_ZPX: decrement_memory(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_DEC_ABS: decrement_memory(mem, addressing_mode_absolute(mem)); break;
+        case INS_DEC_ABSX: decrement_memory(mem, addressing_mode_absolute_X(mem)); break;
 
         // DEX
         case INS_DEX: registerX--; break;
@@ -369,6 +374,16 @@ void CPU::compare(Memory& mem, byte& cpuRegister, word addr){
     CarryFlag = cpuRegister >= data;
     ZeroFlag = cpuRegister == data;
     NegativeFlag = (cpuRegister - data) < 0;
+}
+
+void CPU::decrement_memory(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    byte sub = 0x1;
+    byte tmp;
+    tmp = data + (~sub + 1);
+    mem.write(addr, tmp);
+    NegativeFlag = (tmp >> 7);
+    ZeroFlag = (tmp == 0);
 }
 
 
