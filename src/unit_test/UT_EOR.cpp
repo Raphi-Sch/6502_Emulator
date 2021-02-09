@@ -10,7 +10,8 @@ bool EOR(CPU& cpu, Memory& mem, byte instruction){
 
     reset_and_prepare_memory(mem);
     cpu.reset(mem);
-
+    cpu.ZeroFlag = 1;
+    cpu.NegativeFlag = 0;
     cpu.Accumulator = 0xF0;
     mem.write(0x200, instruction);
 
@@ -89,7 +90,7 @@ bool EOR(CPU& cpu, Memory& mem, byte instruction){
 
     if(!expected_eq(cpu.Accumulator, 0xFF, instructionName, "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
-    if(!expected_eq(cpu.NegativeFlag, 0, instructionName, "NegativeFlag")) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, 1, instructionName, "NegativeFlag")) valid = false;
     if(!only_Z_and_N_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;

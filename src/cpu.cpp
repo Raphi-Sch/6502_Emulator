@@ -144,11 +144,17 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
 
         // EOR
         case INS_EOR_IM:{
-
+            Accumulator = Accumulator ^ fetch_byte(mem);
+            set_zero_and_negative_flag(Accumulator);
         } break;
 
-
-
+        case INS_EOR_ZP: exclusive_OR(mem, addressing_mode_zero_page(mem)); break;
+        case INS_EOR_ZPX: exclusive_OR(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_EOR_ABS: exclusive_OR(mem, addressing_mode_absolute(mem)); break;
+        case INS_EOR_ABSX: exclusive_OR(mem, addressing_mode_absolute_X(mem)); break;
+        case INS_EOR_ABSY: exclusive_OR(mem, addressing_mode_absolute_Y(mem)); break;
+        case INS_EOR_INDX: exclusive_OR(mem, addressing_mode_indexed_indirect(mem)); break;
+        case INS_EOR_INDY: exclusive_OR(mem, addressing_mode_indirect_indexed(mem)); break;
 
         // INC
         case INS_INC_ZP: increment_memory(mem, addressing_mode_zero_page(mem)); break;
