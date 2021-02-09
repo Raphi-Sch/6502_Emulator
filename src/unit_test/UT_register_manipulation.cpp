@@ -42,7 +42,7 @@ bool increment_register(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0x11, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 0, instructionName, registerName)) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -86,7 +86,7 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 0, instructionName, "NegativeFlag")) valid = false;
 
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -128,7 +128,7 @@ bool transfer_accumulator(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0xAA, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 1, instructionName, "NegativeFlag")) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -171,7 +171,7 @@ bool transfer_registerX(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpuRegister, 0x5B, instructionName, registerName)) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 0, instructionName, "NegativeFlag")) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -191,7 +191,7 @@ bool TSX(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.registerX, 0x9D, "INS_TSX", "RegisterX")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, "INS_TSX", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 1, "INS_TSX", "NegativeFlag")) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, "INS_TSX")) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, "INS_TSX")) valid = false;
 
     return valid;
 }
@@ -211,7 +211,7 @@ bool TYA(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.Accumulator, 0x4D, "INS_TYA", "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, "INS_TYA", "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 0, "INS_TYA", "NegativeFlag")) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, "INS_TYA")) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, "INS_TYA")) valid = false;
 
     return valid;
 }

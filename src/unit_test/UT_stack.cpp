@@ -51,7 +51,7 @@ bool PLA(CPU& cpu, Memory& mem){
     if(!expected_eq(cpu.registerY, cpuCopy.registerY, "INS_PLA", "registerY")) valid = false;
     if(!expected_eq(cpu.ProgramCounter, cpuCopy.ProgramCounter + 0x01, "INS_PLA", "ProgramCounter")) valid = false;
     if(!expected_eq(cpu.StackPointer, cpuCopy.StackPointer + 0x01, "INS_PLA", "StackPointer")) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, cpuCopy, "INS_PLA")) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, cpuCopy, "INS_PLA")) valid = false;
 
     return valid;
 }

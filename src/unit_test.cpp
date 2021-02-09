@@ -15,6 +15,7 @@
 #include "unit_test/UT_Decrement.cpp"
 #include "unit_test/UT_Increment.cpp"
 #include "unit_test/UT_ORA.cpp"
+#include "unit_test/UT_EOR.cpp"
 
 using namespace std;
 
@@ -111,6 +112,11 @@ void run_all_test(CPU& cpu, Memory& mem){
     test_nb += result[0];
     test_passed += result[1];
 
+    // Logical EOR
+    result = run_EOR(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
     // Result
     cout << dec << test_passed << " of " << test_nb << " test passed successfully." << endl;
 }
@@ -198,7 +204,7 @@ bool expected_eq(word value, word expected, string instruction, string thing){
     return true;
 }
 
-bool only_C_and_Z_flags_affected(CPU& cpu, CPU& copy, string instruction){
+bool only_Z_and_N_flags_affected(CPU& cpu, CPU& copy, string instruction){
     bool valid = true;
     
     if(!expected_eq(cpu.CarryFlag, copy.CarryFlag, instruction, "CarryFlag")) valid = false;

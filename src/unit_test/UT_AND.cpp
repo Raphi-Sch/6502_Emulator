@@ -90,7 +90,7 @@ bool AND(CPU& cpu, Memory& mem, byte instruction){
     if(!expected_eq(cpu.Accumulator, 0x0F, instructionName, "Accumulator")) valid = false;
     if(!expected_eq(cpu.ZeroFlag, 0, instructionName, "ZeroFlag")) valid = false;
     if(!expected_eq(cpu.NegativeFlag, 0, instructionName, "NegativeFlag")) valid = false;
-    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!only_Z_and_N_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
