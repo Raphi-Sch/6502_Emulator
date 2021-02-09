@@ -10,6 +10,10 @@ bool increment_register(CPU& cpu, Memory& mem, byte instruction){
     string instructionName;
     byte* cpuRegister;
 
+    // Reseting cpu
+    reset_and_prepare_memory(mem);
+    cpu.reset(mem);
+
     switch(instruction){
         case CPU::INS_INX:
             registerName = "registerX";
@@ -30,14 +34,15 @@ bool increment_register(CPU& cpu, Memory& mem, byte instruction){
             return false;
     }
 
-    // Reseting cpu
-    cpu.reset(mem);
+
     CPU CpuCopy = cpu;
     mem.write(0x0200, instruction);
     cpu.step_run(mem);
 
     if(!expected_eq(cpuRegister, 0x11, instructionName, registerName)) valid = false;
-    if(!no_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
+    if(!expected_eq(cpu.ZeroFlag, 0, instructionName, registerName)) valid = false;
+    if(!expected_eq(cpu.NegativeFlag, 0, instructionName, registerName)) valid = false;
+    if(!only_C_and_Z_flags_affected(cpu, CpuCopy, instructionName)) valid = false;
 
     return valid;
 }
@@ -47,6 +52,10 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
     string registerName;
     string instructionName;
     byte* cpuRegister;
+
+    // Reseting cpu
+    cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_DEX:
@@ -68,8 +77,7 @@ bool decrement_register(CPU& cpu, Memory& mem, byte instruction){
             return false;
     }
 
-    // Reseting cpu
-    cpu.reset(mem);
+
     CPU CpuCopy = cpu;
     mem.write(0x0200, instruction);
     cpu.step_run(mem);
@@ -91,6 +99,7 @@ bool transfer_accumulator(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_TAX:
@@ -132,6 +141,7 @@ bool transfer_registerX(CPU& cpu, Memory& mem, byte instruction){
 
     // Reseting cpu
     cpu.reset(mem);
+    reset_and_prepare_memory(mem);
 
     switch(instruction){
         case CPU::INS_TXA:
@@ -170,6 +180,7 @@ bool TSX(CPU& cpu, Memory& mem){
     bool valid = true;
 
     // Reseting cpu
+    reset_and_prepare_memory(mem);
     cpu.reset(mem);
     cpu.StackPointer = 0x9D;
 
@@ -189,6 +200,7 @@ bool TYA(CPU& cpu, Memory& mem){
     bool valid = true;
 
     // Reseting cpu
+    reset_and_prepare_memory(mem);
     cpu.reset(mem);
     cpu.registerY = 0x4D;
 
