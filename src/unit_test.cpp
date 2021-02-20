@@ -17,6 +17,7 @@
 #include "unit_test/UT_ORA.cpp"
 #include "unit_test/UT_EOR.cpp"
 #include "unit_test/UT_Rotate.cpp"
+#include "unit_test/UT_SBC.cpp"
 
 using namespace std;
 
@@ -120,6 +121,11 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     // Rotation (shifting)
     result = run_rotate(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
+    // SBC
+    result = run_SBC(cpu, mem);
     test_nb += result[0];
     test_passed += result[1];
 

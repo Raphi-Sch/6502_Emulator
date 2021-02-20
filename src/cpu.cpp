@@ -291,6 +291,23 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // RTS
         case INS_RTS: ProgramCounter = (stack_pull(mem) + (stack_pull(mem) << 8) + 1); break;
 
+        // SBC
+        case INS_SBC_IM: {
+            byte data = fetch_byte(mem);
+            word tmp = Accumulator - data - !CarryFlag;
+            CarryFlag = tmp > 0xFF;
+            Accumulator = tmp & 0xFF;
+            set_zero_and_negative_flag(Accumulator);
+        } break;
+
+        case INS_SBC_ZP: substract_with_carry(mem, addressing_mode_zero_page(mem)); break;
+        case INS_SBC_ZPX: substract_with_carry(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_SBC_ABS: substract_with_carry(mem, addressing_mode_absolute(mem)); break;
+        case INS_SBC_ABSX: substract_with_carry(mem, addressing_mode_absolute_X(mem)); break;
+        case INS_SBC_ABSY: substract_with_carry(mem, addressing_mode_absolute_Y(mem)); break;
+        case INS_SBC_INDX: substract_with_carry(mem, addressing_mode_indexed_indirect(mem)); break;
+        case INS_SBC_INDY: substract_with_carry(mem, addressing_mode_indirect_indexed(mem)); break;
+
         // SEC
         case INS_SEC: CarryFlag = 1; break;
 
@@ -497,6 +514,14 @@ void CPU::rotate_right(Memory& mem, word addr){
     mem.write(addr, data);
     NegativeFlag = data & 0x80;
     ZeroFlag = data == 0;
+}
+
+void CPU::substract_with_carry(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    word tmp = Accumulator - data - !CarryFlag;
+    CarryFlag = tmp > 0xFF;
+    Accumulator = tmp & 0xFF;
+    set_zero_and_negative_flag(Accumulator);
 }
 
 void CPU::relative_displacement(const Memory& mem){
