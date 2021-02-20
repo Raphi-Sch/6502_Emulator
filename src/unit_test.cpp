@@ -21,7 +21,7 @@
 
 using namespace std;
 
-void run_all_test(CPU& cpu, Memory& mem){
+bool run_all_test(CPU& cpu, Memory& mem){
     int test_nb = 0;
     int test_passed = 0;
     int * result;
@@ -131,6 +131,8 @@ void run_all_test(CPU& cpu, Memory& mem){
 
     // Result
     cout << dec << test_passed << " of " << test_nb << " test passed successfully." << endl;
+
+    return test_passed == test_nb;
 }
 
 // Reset

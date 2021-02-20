@@ -10,11 +10,10 @@ int main() {
     Memory mem;
 
     mem.clear();
-    
-
     cpu.reset(mem);
 
-    run_all_test(cpu, mem);
+    // Testing if all instruction are working, CPU is halted if not
+    if(!run_all_test(cpu, mem)) { return 1;}
 
     return 0;
 }

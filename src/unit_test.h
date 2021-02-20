@@ -6,7 +6,7 @@
 using namespace std;
 
 void reset_and_prepare_memory(Memory& mem);
-void run_all_test(CPU& cpu, Memory& mem);
+bool run_all_test(CPU& cpu, Memory& mem);
 
 // NOP
 bool NOP(CPU& cpu, Memory& mem);
