@@ -16,6 +16,7 @@
 #include "unit_test/UT_Increment.cpp"
 #include "unit_test/UT_ORA.cpp"
 #include "unit_test/UT_EOR.cpp"
+#include "unit_test/UT_Rotate.cpp"
 
 using namespace std;
 
@@ -117,10 +118,14 @@ void run_all_test(CPU& cpu, Memory& mem){
     test_nb += result[0];
     test_passed += result[1];
 
+    // Rotation (shifting)
+    result = run_rotate(cpu, mem);
+    test_nb += result[0];
+    test_passed += result[1];
+
     // Result
     cout << dec << test_passed << " of " << test_nb << " test passed successfully." << endl;
 }
-
 
 // Reset
 void reset_and_prepare_memory(Memory& mem){

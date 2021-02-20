@@ -252,6 +252,36 @@ void CPU::execute_operation(Memory &mem, byte OpCode){
         // PLP
         case INS_PLP: flags_restore(stack_pull(mem)); break;
 
+        // ROL
+        case INS_ROL_ACC: {
+            byte data = Accumulator;
+            byte OldCarryFlag = 0x01 & CarryFlag;
+            CarryFlag = (data & 0x80) >> 7;
+            Accumulator = (data << 1) | OldCarryFlag;
+            NegativeFlag = Accumulator & 0x80;
+            ZeroFlag = Accumulator == 0;
+        } break;
+
+        case INS_ROL_ZP: rotate_left(mem, addressing_mode_zero_page(mem)); break;
+        case INS_ROL_ZPX: rotate_left(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_ROL_ABS: rotate_left(mem, addressing_mode_absolute(mem)); break;
+        case INS_ROL_ABSX: rotate_left(mem, addressing_mode_absolute_X(mem)); break;
+
+        // ROR
+        case INS_ROR_ACC: {
+            byte data = Accumulator;
+            byte OldCarryFlag = 0x01 & CarryFlag;
+            CarryFlag = data & 0x01;
+            Accumulator = (data >> 1) | (OldCarryFlag << 7);
+            NegativeFlag = Accumulator & 0x80;
+            ZeroFlag = Accumulator == 0;
+        } break;
+
+        case INS_ROR_ZP: rotate_right(mem, addressing_mode_zero_page(mem)); break;
+        case INS_ROR_ZPX: rotate_right(mem, addressing_mode_zero_page_X(mem)); break;
+        case INS_ROR_ABS: rotate_right(mem, addressing_mode_absolute(mem)); break;
+        case INS_ROR_ABSX: rotate_right(mem, addressing_mode_absolute_X(mem)); break;
+
         // RTI
         case INS_RTI: {
             flags_restore(stack_pull(mem));
@@ -449,6 +479,25 @@ void CPU::increment_register(byte& cpuRegister){
     ZeroFlag = (cpuRegister == 0);
 }
 
+void CPU::rotate_left(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    byte OldCarryFlag = 0x01 & CarryFlag;
+    CarryFlag = (data & 0x80) >> 7;
+    data = (data << 1) | OldCarryFlag;
+    mem.write(addr, data);
+    NegativeFlag = data & 0x80;
+    ZeroFlag = data == 0;
+}
+
+void CPU::rotate_right(Memory& mem, word addr){
+    byte data = mem.read(addr);
+    byte OldCarryFlag = 0x01 & CarryFlag;
+    CarryFlag = data & 0x01;
+    data = (data >> 1) | (OldCarryFlag << 7);
+    mem.write(addr, data);
+    NegativeFlag = data & 0x80;
+    ZeroFlag = data == 0;
+}
 
 void CPU::relative_displacement(const Memory& mem){
     byte offset = fetch_byte(mem);

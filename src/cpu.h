@@ -316,6 +316,8 @@ class CPU{
         void decrement_register(byte& cpuRegister);
         void increment_memory(Memory& mem, word addr);
         void increment_register(byte& cpuRegister);
+        void rotate_left(Memory& mem, word addr);
+        void rotate_right(Memory& mem, word addr);
         
         void relative_displacement(const Memory& mem);
 
